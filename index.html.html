@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="km" class="h-full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ប្រព័ន្ធគ្រប់គ្រងបុគ្គលិក លិខិតចូល-ចេញ និងរបាយការណ៍អនុវត្តការងារ - ការិយាល័យបុគ្គលិក ខេត្តពោធិ៍សាត់</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Moul&family=Noto+Sans+Khmer:wght@300;400;500;600;700&family=Noto+Serif+Khmer:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', 'Noto Sans Khmer', sans-serif; }
+  .font-moul { font-family: 'Moul', serif; }
+  .report-font { font-family: 'Noto Serif Khmer', 'Noto Sans Khmer', serif; }
+  @page { size: A4; margin: 14mm; }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: white !important; }
+    main { padding: 0 !important; max-width: none !important; overflow: visible !important; }
+    .print-container { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: none !important; border-radius: 0 !important; }
+    tr, .break-inside-avoid { break-inside: avoid; }
+  }
+</style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-full flex flex-col antialiased">
+
+<header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 text-white shadow-md z-30 no-print">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row items-center justify-between gap-3">
+    <div class="flex items-center gap-3 text-center sm:text-left">
+      <div class="bg-white/10 p-2.5 rounded-2xl border border-white/20"><i class="fa-solid fa-landmark text-amber-300 text-xl"></i></div>
+      <div>
+        <h1 class="font-moul text-xs sm:text-sm text-amber-300 tracking-wide">មន្ទីរអប់រំ យុវជន និងកីឡាខេត្តពោធិ៍សាត់</h1>
+        <div class="flex flex-wrap items-center gap-2">
+          <p class="text-xs sm:text-sm text-blue-100 font-medium">ប្រព័ន្ធគ្រប់គ្រងបុគ្គលិក លិខិតរដ្ឋបាល និងរបាយការណ៍</p>
+          <span id="cloud-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/20 text-amber-200 border border-amber-400/30"><i class="fa-solid fa-rotate fa-spin"></i> កំពុងពិនិត្យការភ្ជាប់...</span>
+        </div>
+      </div>
+    </div>
+    <nav class="flex flex-wrap items-center justify-center gap-1 bg-black/20 p-1.5 rounded-2xl border border-white/10">
+      <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition bg-white text-blue-900 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-chart-pie"></i> ផ្ទាំងគ្រប់គ្រង</button>
+      <button onclick="switchTab('staff')" id="tab-staff" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-blue-100 hover:bg-white/10 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> មន្ត្រី</button>
+      <button onclick="switchTab('framework')" id="tab-framework" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-blue-100 hover:bg-white/10 flex items-center gap-1.5"><i class="fa-solid fa-calendar-days"></i> ក្របខ័ណ្ឌ ៧០</button>
+      <button onclick="switchTab('log')" id="tab-log" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-blue-100 hover:bg-white/10 flex items-center gap-1.5"><i class="fa-solid fa-pen-to-square"></i> កត់ត្រាការងារ</button>
+      <button onclick="switchTab('docs')" id="tab-docs" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-blue-100 hover:bg-white/10 flex items-center gap-1.5"><i class="fa-solid fa-envelope-open-text"></i> លិខិតចូល-ចេញ</button>
+      <button onclick="switchTab('attendance')" id="tab-attendance" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-blue-100 hover:bg-white/10 flex items-center gap-1.5"><i class="fa-solid fa-user-clock"></i> វត្តមាន</button>
+      <button onclick="switchTab('reports')" id="tab-reports" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-blue-100 hover:bg-white/10 flex items-center gap-1.5"><i class="fa-solid fa-file-lines"></i> របាយការណ៍</button>
+    </nav>
+    <div class="flex items-center gap-1.5">
+      <span id="user-badge" class="hidden items-center gap-1.5 text-[11px] bg-white/10 border border-white/20 rounded-xl px-2.5 py-1.5"><i class="fa-solid fa-user-shield text-amber-300"></i><span id="user-badge-text"></span><button onclick="doLogout()" class="ml-1 text-amber-200 hover:text-white font-semibold">ចាកចេញ</button></span>
+      <div id="backup-box" class="flex items-center gap-1.5">
+      <button onclick="exportBackup()" title="បម្រុងទុកទិន្នន័យ (JSON)" class="bg-white/10 hover:bg-white/20 border border-white/20 text-xs px-2.5 py-2 rounded-xl flex items-center gap-1"><i class="fa-solid fa-download"></i> បម្រុងទុក</button>
+      <button onclick="document.getElementById('import-file').click()" title="ស្តារទិន្នន័យពីឯកសារបម្រុងទុក" class="bg-white/10 hover:bg-white/20 border border-white/20 text-xs px-2.5 py-2 rounded-xl flex items-center gap-1"><i class="fa-solid fa-upload"></i> ស្ដារ</button>
+      <button onclick="restoreAutoBackup()" title="ស្ដារទិន្នន័យពី Auto-Backup ចុងក្រោយ" class="bg-white/10 hover:bg-white/20 border border-white/20 text-xs px-2.5 py-2 rounded-xl flex items-center gap-1"><i class="fa-solid fa-clock-rotate-left"></i> ស្ដារ Auto</button>
+      <input type="file" id="import-file" accept="application/json,.json" class="hidden" onchange="importBackup(event)">
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+
+<!-- ============ DASHBOARD ============ -->
+<div id="view-dashboard" class="view-section space-y-6">
+  <div class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white rounded-3xl p-6 shadow-md relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="relative z-10">
+      <span class="bg-amber-400/20 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full border border-amber-300/30"><i class="fa-solid fa-shield-halved mr-1"></i> ប្រព័ន្ធរដ្ឋបាលឌីជីថល</span>
+      <h2 class="text-xl sm:text-2xl font-bold mt-2 font-moul tracking-wide">ការិយាល័យបុគ្គលិក និងបណ្តុះបណ្តាល</h2>
+      <p class="text-blue-100 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">គ្រប់គ្រងទិន្នន័យមន្ត្រីរាជការ តាមដានលិខិតចូល-ចេញ ការអនុវត្តក្របខ័ណ្ឌការងារទាំង ៧០ មុខងារ និងបង្កើតរបាយការណ៍ប្រចាំថ្ងៃ សប្តាហ៍ ខែ និងឆ្នាំ ដោយស្វ័យប្រវត្តិ។</p>
+    </div>
+    <div class="relative z-10 flex flex-wrap gap-2 shrink-0">
+      <button onclick="switchTab('docs')" class="bg-emerald-400 hover:bg-emerald-500 text-blue-950 font-bold px-3.5 py-2.5 rounded-xl text-xs shadow transition flex items-center gap-1.5"><i class="fa-solid fa-envelope-open-text"></i> ចុះលេខលិខិតចូល-ចេញ</button>
+      <button onclick="switchTab('log')" class="bg-amber-400 hover:bg-amber-500 text-blue-950 font-bold px-3.5 py-2.5 rounded-xl text-xs shadow transition flex items-center gap-1.5"><i class="fa-solid fa-plus-circle"></i> កត់ត្រាការងារថ្ងៃនេះ</button>
+      <button onclick="switchTab('reports')" class="bg-white/10 hover:bg-white/25 text-white font-medium px-3.5 py-2.5 rounded-xl text-xs border border-white/20 transition flex items-center gap-1.5"><i class="fa-solid fa-print"></i> របាយការណ៍</button>
+    </div>
+    <div class="absolute -right-10 -bottom-10 text-white/5 text-9xl pointer-events-none"><i class="fa-solid fa-users-gear"></i></div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">មន្ត្រីសរុប</p><h3 class="text-lg font-bold text-slate-900 mt-1" id="kpi-total-staff">0</h3></div>
+      <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-base"><i class="fa-solid fa-user-tie"></i></div>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">ការងារខែនេះ</p><h3 class="text-lg font-bold text-blue-900 mt-1" id="kpi-month-tasks">0</h3></div>
+      <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-base"><i class="fa-solid fa-calendar-check"></i></div>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">កំណត់ត្រាខែនេះ</p><h3 class="text-lg font-bold text-slate-900 mt-1" id="kpi-month-logs">0</h3></div>
+      <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base"><i class="fa-solid fa-clipboard-list"></i></div>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">ការគ្របដណ្តប់</p><h3 class="text-lg font-bold text-emerald-600 mt-1" id="kpi-coverage">0%</h3></div>
+      <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base"><i class="fa-solid fa-circle-check"></i></div>
+    </div>
+    <div onclick="switchTab('docs')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 hover:border-blue-300 transition flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">លិខិតចូល / ចេញ (ខែនេះ)</p><h3 class="text-lg font-bold text-indigo-700 mt-1" id="kpi-docs-month">0 / 0</h3></div>
+      <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-base"><i class="fa-solid fa-envelope-open-text"></i></div>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">កំពុងចាត់ការ / រង់ចាំ</p><h3 class="text-lg font-bold text-amber-600 mt-1" id="kpi-pending-logs">0</h3></div>
+      <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-base"><i class="fa-solid fa-clock-rotate-left"></i></div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col">
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><i class="fa-solid fa-calendar-day text-blue-600"></i> ភារកិច្ចតាមប្រតិទិនប្រចាំខែ</h3>
+        <select id="dashboard-month-select" onchange="renderDashboardMonthTasks()" class="text-xs border border-slate-300 rounded-lg px-2.5 py-1 bg-slate-50 font-medium focus:ring-2 focus:ring-blue-500 outline-none"></select>
+      </div>
+      <div class="mb-3">
+        <div class="flex justify-between text-[11px] text-slate-500 mb-1"><span id="dash-progress-text">-</span><span id="dash-progress-pct" class="font-bold text-emerald-700">0%</span></div>
+        <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div id="dash-progress-bar" class="h-full bg-emerald-500 transition-all" style="width:0%"></div></div>
+      </div>
+      <div id="dashboard-month-list" class="space-y-2.5 overflow-y-auto max-h-[460px] pr-1"></div>
+    </div>
+
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-3 pb-2 border-b border-slate-100"><i class="fa-solid fa-ranking-star text-blue-600"></i> បន្ទុកការងារមន្ត្រីតាមខែដែលបានជ្រើស</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead><tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 border-b border-slate-200">
+              <th class="py-2 px-3">មន្ត្រី</th><th class="py-2 px-3 text-center">ភារកិច្ចត្រូវធ្វើ</th><th class="py-2 px-3 text-center">កំណត់ត្រា</th><th class="py-2 px-3 text-center">សម្រេច</th>
+            </tr></thead>
+            <tbody id="dashboard-workload" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+          <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-blue-600"></i> សកម្មភាពអនុវត្តការងារថ្មីៗ</h3>
+          <button onclick="switchTab('log')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1">មើលទាំងអស់ <i class="fa-solid fa-arrow-right text-[10px]"></i></button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead><tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 border-b border-slate-200">
+              <th class="py-2.5 px-3">កាលបរិច្ឆេទ</th><th class="py-2.5 px-3">មន្ត្រីអនុវត្ត</th><th class="py-2.5 px-3">ខ្លឹមសារការងារ</th><th class="py-2.5 px-3">បរិមាណ</th><th class="py-2.5 px-3 text-center">ស្ថានភាព</th>
+            </tr></thead>
+            <tbody id="dashboard-recent-logs" class="divide-y divide-slate-100 text-xs"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STAFF ============ -->
+<div id="view-staff" class="view-section hidden space-y-6">
+  <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col lg:flex-row items-center justify-between gap-4">
+    <div>
+      <h2 class="text-base font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-id-card-clip text-blue-600"></i> បញ្ជីឈ្មោះ និងបំណែងចែកភារកិច្ចមន្ត្រី (<span id="staff-count">0</span> រូប)</h2>
+      <p class="text-xs text-slate-500 mt-0.5">ផ្អែកលើឯកសារបំណែងចែកភារកិច្ចឆ្នាំ២០២៦-២០២៧ នៃការិយាល័យបុគ្គលិក និងបណ្តុះបណ្តាល</p>
+    </div>
+    <div class="flex items-center gap-2 w-full lg:w-auto">
+      <div class="relative flex-1 lg:w-64">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+        <input type="text" id="staff-search" oninput="renderStaffList()" placeholder="ស្វែងរកឈ្មោះ អត្តលេខ តួនាទី..." class="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      <button onclick="exportStaffCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-file-csv"></i> CSV</button>
+      <button id="btn-add-staff" onclick="openAddStaffModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2 rounded-xl text-xs shadow-sm transition flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-plus"></i> បន្ថែមមន្ត្រី</button>
+    </div>
+  </div>
+  <div id="staff-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+</div>
+
+<!-- ============ FRAMEWORK ============ -->
+<div id="view-framework" class="view-section hidden space-y-6">
+  <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col gap-4">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div>
+        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-calendar-days text-blue-600"></i> ក្របខ័ណ្ឌពេលវេលា និងសកម្មភាពការងារប្រចាំឆ្នាំ (៧០ មុខងារ)</h2>
+        <p class="text-xs text-slate-500 mt-0.5">ប្រតិទិនអនុវត្តការងារតាមខែទាំង ១២ និងអ្នកទទួលបន្ទុកច្បាស់លាស់ <span id="fw-result-count" class="font-semibold text-blue-700"></span></p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <select id="framework-month-filter" onchange="renderFrameworkTable()" class="text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none">
+          <option value="all">គ្រប់ខែទាំងអស់</option>
+          <option value="1">ខែ១ (មករា)</option><option value="2">ខែ២ (កុម្ភៈ)</option><option value="3">ខែ៣ (មីនា)</option><option value="4">ខែ៤ (មេសា)</option>
+          <option value="5">ខែ៥ (ឧសភា)</option><option value="6">ខែ៦ (មិថុនា)</option><option value="7">ខែ៧ (កក្កដា)</option><option value="8">ខែ៨ (សីហា)</option>
+          <option value="9">ខែ៩ (កញ្ញា)</option><option value="10">ខែ១០ (តុលា)</option><option value="11">ខែ១១ (វិច្ឆិកា)</option><option value="12">ខែ១២ (ធ្នូ)</option>
+        </select>
+        <select id="framework-staff-filter" onchange="renderFrameworkTable()" class="text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"><option value="all">មន្ត្រីទទួលបន្ទុកទាំងអស់</option></select>
+        <button id="btn-add-task" onclick="openTaskModal('')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2 rounded-xl text-xs shadow-sm transition flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> បន្ថែមការងារថ្មី</button>
+      </div>
+    </div>
+    <div class="relative">
+      <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+      <input type="text" id="framework-search" oninput="renderFrameworkTable()" placeholder="ស្វែងរកតាមចំណងជើងការងារ ឬលេខរៀង..." class="w-full pl-9 pr-4 py-2 text-xs border border-slate-300 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+  </div>
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="bg-slate-900 text-white font-semibold text-[11px]">
+            <th class="py-3 px-3 text-center border-r border-slate-700 w-12">លរ</th>
+            <th class="py-3 px-3 border-r border-slate-700 min-w-[260px]">បរិយាយការងារ</th>
+            <th class="py-3 px-1 text-center border-r border-slate-700 w-8">១</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">២</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">៣</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">៤</th>
+            <th class="py-3 px-1 text-center border-r border-slate-700 w-8">៥</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">៦</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">៧</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">៨</th>
+            <th class="py-3 px-1 text-center border-r border-slate-700 w-8">៩</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">១០</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">១១</th><th class="py-3 px-1 text-center border-r border-slate-700 w-8">១២</th>
+            <th class="py-3 px-3 border-r border-slate-700 w-44">មន្ត្រីទទួលបន្ទុក</th>
+            <th class="py-3 px-3 border-r border-slate-700 min-w-[160px]">កំណត់សម្គាល់</th>
+            <th class="py-3 px-2 text-center w-20">សកម្មភាព</th>
+          </tr>
+        </thead>
+        <tbody id="framework-tbody" class="divide-y divide-slate-200"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LOG ============ -->
+<div id="view-log" class="view-section hidden space-y-6">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 h-fit">
+      <h3 id="log-form-title" class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2 border-b border-slate-100 pb-2.5"><i class="fa-solid fa-pen-nib text-blue-600"></i> កត់ត្រាលទ្ធផលអនុវត្តការងារប្រចាំថ្ងៃ</h3>
+      <form id="work-log-form" onsubmit="saveWorkLog(event)" class="space-y-3.5">
+        <input type="hidden" id="log-id">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">កាលបរិច្ឆេទអនុវត្ត *</label>
+          <input type="date" id="log-date" required class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">មន្ត្រីសាមីអនុវត្ត *</label>
+          <select id="log-staff" required onchange="filterTasksByStaff()" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"></select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">ពាក់ព័ន្ធនឹងក្របខ័ណ្ឌការងារ (៧០ មុខ)</label>
+          <select id="log-framework-task" onchange="autoFillTaskTitle()" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"><option value="">-- ជ្រើសរើសមុខងារ ឬវាយបញ្ចូលខាងក្រោម --</option></select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">ខ្លឹមសារការងារជាក់ស្តែង *</label>
+          <textarea id="log-description" required rows="3" placeholder="ឧ. រៀបចំសំណុំឯកសារស្នើសុំតែងតាំងមុខដំណែង..." class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">បរិមាណ</label>
+            <input type="number" id="log-quantity" min="1" value="1" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">ឯកតារង្វាស់</label>
+            <input type="text" id="log-unit" value="ច្បាប់ / ករណី" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">ស្ថានភាពការងារ</label>
+          <select id="log-status" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+            <option value="completed">សម្រេចរួចរាល់ (100%)</option>
+            <option value="in-progress">កំពុងអនុវត្តបន្ត</option>
+            <option value="pending">រង់ចាំការសម្រេច</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">ចំណាំ / លទ្ធផលទទួលបាន</label>
+          <input type="text" id="log-note" placeholder="ឧ. បានបញ្ជូនទៅថ្នាក់ដឹកនាំមន្ទីរ" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1"><i class="fa-solid fa-paperclip"></i> ឯកសារភ្ជាប់ (PDF, Word, Excel, រូបភាព)</label>
+          <input type="file" id="log-files" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.txt" onchange="onLogFilesPicked()" class="w-full text-xs border border-slate-300 rounded-xl px-2 py-1.5 bg-slate-50 file:mr-2 file:border-0 file:rounded-lg file:bg-blue-50 file:text-blue-700 file:px-2.5 file:py-1 file:text-xs file:font-medium">
+          <p id="log-file-limit" class="text-[10px] text-slate-400 mt-1"></p>
+          <div id="log-existing-files" class="mt-1.5 space-y-1"></div>
+          <div id="log-pending-files" class="mt-1 space-y-1"></div>
+          <p id="upload-progress" class="text-[11px] text-blue-600 mt-1 hidden"></p>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1"><i class="fa-brands fa-google-drive text-emerald-600"></i> តំណឯកសារ Google Drive (មួយជួរមួយតំណ)</label>
+          <textarea id="log-links" rows="2" placeholder="https://drive.google.com/file/d/..." class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+        </div>
+        <div class="pt-2 flex gap-2">
+          <button type="submit" id="btn-save-log" class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-medium py-2.5 px-4 rounded-xl text-xs shadow-sm transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-floppy-disk"></i> <span id="btn-save-log-text">រក្សាទុកការងារ</span></button>
+          <button type="button" onclick="resetLogForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 px-3 rounded-xl text-xs transition">សម្អាត</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col">
+      <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><i class="fa-solid fa-list-check text-blue-600"></i> កំណត់ត្រាការងារ <span id="log-count" class="text-xs font-semibold text-blue-700"></span></h3>
+        <div class="flex flex-wrap gap-2">
+          <input type="text" id="log-search" oninput="renderLogTable()" placeholder="ស្វែងរក..." class="text-xs border border-slate-300 rounded-xl px-2.5 py-1.5 bg-slate-50 outline-none w-28">
+          <input type="month" id="log-filter-month" onchange="renderLogTable()" class="text-xs border border-slate-300 rounded-xl px-2 py-1.5 bg-slate-50 outline-none">
+          <select id="log-filter-staff" onchange="renderLogTable()" class="text-xs border border-slate-300 rounded-xl px-2.5 py-1.5 bg-slate-50 outline-none"><option value="all">មន្ត្រីទាំងអស់</option></select>
+          <select id="log-filter-status" onchange="renderLogTable()" class="text-xs border border-slate-300 rounded-xl px-2.5 py-1.5 bg-slate-50 outline-none">
+            <option value="all">គ្រប់ស្ថានភាព</option><option value="completed">សម្រេចរួចរាល់</option><option value="in-progress">កំពុងអនុវត្ត</option><option value="pending">រង់ចាំ</option>
+          </select>
+          <button onclick="exportLogsCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1"><i class="fa-solid fa-file-csv"></i> CSV</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto flex-1">
+        <table class="w-full text-left border-collapse">
+          <thead><tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 border-b border-slate-200">
+            <th class="py-2.5 px-3">កាលបរិច្ឆេទ</th><th class="py-2.5 px-3">មន្ត្រី</th><th class="py-2.5 px-3">ខ្លឹមសារការងារ</th><th class="py-2.5 px-3 text-center">បរិមាណ</th><th class="py-2.5 px-3 text-center">ស្ថានភាព</th><th class="py-2.5 px-3 text-center">សកម្មភាព</th>
+          </tr></thead>
+          <tbody id="all-logs-tbody" class="divide-y divide-slate-100 text-xs"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DOCUMENTS (លិខិតចូល-ចេញ) ============ -->
+<div id="view-docs" class="view-section hidden space-y-6">
+  <!-- KPI លិខិតចូល-ចេញ -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 no-print">
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">លិខិតចូលសរុប (ខែនេះ)</p><h3 class="text-xl font-bold text-blue-700 mt-1" id="doc-kpi-in">0</h3></div>
+      <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg"><i class="fa-solid fa-inbox"></i></div>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">លិខិតចេញសរុប (ខែនេះ)</p><h3 class="text-xl font-bold text-indigo-700 mt-1" id="doc-kpi-out">0</h3></div>
+      <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg"><i class="fa-solid fa-paper-plane"></i></div>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">កំពុងចាត់ការ / រង់ចាំចំណារ</p><h3 class="text-xl font-bold text-amber-600 mt-1" id="doc-kpi-pending">0</h3></div>
+      <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg"><i class="fa-solid fa-hourglass-half"></i></div>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+      <div><p class="text-[11px] text-slate-500 font-medium">បានចាត់ការរួចរាល់ (សរុប)</p><h3 class="text-xl font-bold text-emerald-600 mt-1" id="doc-kpi-done">0</h3></div>
+      <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg"><i class="fa-solid fa-check-double"></i></div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- ទម្រង់ចុះលេខលិខិតចូល-ចេញ -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 h-fit no-print">
+      <h3 id="doc-form-title" class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2 border-b border-slate-100 pb-2.5"><i class="fa-solid fa-envelope-open-text text-blue-600"></i> ចុះលេខលិខិតចូល - លិខិតចេញ</h3>
+      <form id="doc-form" onsubmit="saveDocument(event)" class="space-y-3">
+        <input type="hidden" id="doc-id">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">ប្រភេទលិខិត *</label>
+            <select id="doc-direction" onchange="onDocDirectionChange()" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 font-semibold text-blue-900 focus:ring-2 focus:ring-blue-500 outline-none">
+              <option value="incoming">📥 លិខិតចូល (Incoming)</option>
+              <option value="outgoing">📤 លិខិតចេញ (Outgoing)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">លេខចុះបញ្ជីការិយាល័យ *</label>
+            <input type="text" id="doc-reg-no" required placeholder="ឧ. ០០១/២៦ ក.ប.ប" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 font-mono font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">លេខលិខិតដើម / លេខយោង</label>
+            <input type="text" id="doc-ref-no" placeholder="ឧ. ១២៣ អយក.បគ" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">ប្រភេទឯកសារ</label>
+            <select id="doc-category" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+              <option value="លិខិតរដ្ឋបាល">លិខិតរដ្ឋបាល</option>
+              <option value="លិខិតបង្គាប់ការ">លិខិតបង្គាប់ការ</option>
+              <option value="លិខិតឧទ្ទេសនាម">លិខិតឧទ្ទេសនាម</option>
+              <option value="សេចក្តីជូនដំណឹង">សេចក្តីជូនដំណឹង</option>
+              <option value="របាយការណ៍">របាយការណ៍</option>
+              <option value="សំណើផ្សេងៗ">សំណើផ្សេងៗ</option>
+              <option value="ប្រកាស / អនុក្រឹត្យ">ប្រកាស / អនុក្រឹត្យ</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">កាលបរិច្ឆេទចុះលិខិត</label>
+            <input type="date" id="doc-date" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <label id="doc-reg-date-label" class="block text-[11px] font-semibold text-slate-600 mb-1">ថ្ងៃខែឆ្នាំទទួល *</label>
+            <input type="date" id="doc-reg-date" required class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+        </div>
+        <div>
+          <label id="doc-party-label" class="block text-[11px] font-semibold text-slate-600 mb-1">ប្រភពលិខិត (មកពីអង្គភាព / ស្ថាប័ន) *</label>
+          <input type="text" id="doc-party" required placeholder="ឧ. នាយកដ្ឋានបុគ្គលិក ឬ ការិ.អយក ក្រុងពោធិ៍សាត់" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">កម្មវត្ថុ / ខ្លឹមសារសង្ខេប *</label>
+          <textarea id="doc-subject" required rows="2" placeholder="ស្តីពី..." class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">មន្ត្រីទទួលចាត់ការ</label>
+            <select id="doc-assignee" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">ស្ថានភាពចាត់ការ</label>
+            <select id="doc-status" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+              <option value="pending">រង់ចាំចំណារ / ពិនិត្យ</option>
+              <option value="processing">កំពុងចាត់ការ</option>
+              <option value="completed">បានចាត់ការ / បញ្ជូនរួច</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1">ចំណារថ្នាក់ដឹកនាំ / កំណត់សម្គាល់</label>
+          <input type="text" id="doc-note" placeholder="ឧ. ប្រធានការិយាល័យចារជូនលោក..." class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1"><i class="fa-brands fa-google-drive text-emerald-600"></i> តំណស្កេនលិខិត (Google Drive / PDF URL)</label>
+          <input type="url" id="doc-link" placeholder="https://drive.google.com/file/d/..." class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <label class="flex items-center gap-2 text-xs text-slate-700 bg-blue-50/70 border border-blue-200 rounded-xl px-3 py-2 cursor-pointer">
+          <input type="checkbox" id="doc-auto-log" class="w-4 h-4 accent-blue-600">
+          <span>កត់ត្រាចូលក្នុងរបាយការណ៍ការងារប្រចាំថ្ងៃដោយស្វ័យប្រវត្តិ (មុខងារ #៤២/#៤៣)</span>
+        </label>
+        <div class="pt-1 flex gap-2">
+          <button type="submit" id="btn-save-doc" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-xl text-xs shadow-sm transition flex items-center justify-center gap-1.5"><i class="fa-solid fa-floppy-disk"></i> <span id="btn-save-doc-text">រក្សាទុកលិខិត</span></button>
+          <button type="button" onclick="resetDocForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 px-3 rounded-xl text-xs transition">សម្អាត</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- បញ្ជីលិខិតចូល-ចេញ -->
+    <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col print-container">
+      <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><i class="fa-solid fa-book-open text-blue-600"></i> សៀវភៅចុះបញ្ជីលិខិតចូល - លិខិតចេញ <span id="doc-list-count" class="text-xs font-semibold text-blue-700"></span></h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">តាមដានលំហូរឯកសាររដ្ឋបាល និងការចាត់ការរបស់មន្ត្រីក្នុងការិយាល័យ</p>
+        </div>
+        <div class="flex flex-wrap gap-1.5 no-print">
+          <input type="text" id="doc-search" oninput="renderDocsTable()" placeholder="ស្វែងរកលេខ កម្មវត្ថុ..." class="text-xs border border-slate-300 rounded-xl px-2.5 py-1.5 bg-slate-50 outline-none w-32">
+          <input type="month" id="doc-filter-month" onchange="renderDocsTable()" class="text-xs border border-slate-300 rounded-xl px-2 py-1.5 bg-slate-50 outline-none">
+          <select id="doc-filter-dir" onchange="renderDocsTable()" class="text-xs border border-slate-300 rounded-xl px-2 py-1.5 bg-slate-50 outline-none">
+            <option value="all">ចូល & ចេញ</option>
+            <option value="incoming">📥 លិខិតចូល</option>
+            <option value="outgoing">📤 លិខិតចេញ</option>
+          </select>
+          <select id="doc-filter-status" onchange="renderDocsTable()" class="text-xs border border-slate-300 rounded-xl px-2 py-1.5 bg-slate-50 outline-none">
+            <option value="all">គ្រប់ស្ថានភាព</option>
+            <option value="pending">រង់ចាំចំណារ</option>
+            <option value="processing">កំពុងចាត់ការ</option>
+            <option value="completed">បានចាត់ការរួច</option>
+          </select>
+          <button onclick="exportDocsCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button onclick="printDocsRegister()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto flex-1">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead><tr class="bg-slate-50 text-[11px] font-semibold text-slate-600 border-b border-slate-200">
+            <th class="py-2.5 px-2.5 whitespace-nowrap">ប្រភេទ / លេខចុះ</th>
+            <th class="py-2.5 px-2.5 whitespace-nowrap">កាលបរិច្ឆេទ</th>
+            <th class="py-2.5 px-3">ប្រភព / គោលដៅ & កម្មវត្ថុ</th>
+            <th class="py-2.5 px-2.5 whitespace-nowrap">អ្នកចាត់ការ</th>
+            <th class="py-2.5 px-2.5 text-center whitespace-nowrap">ស្ថានភាព</th>
+            <th class="py-2.5 px-2.5 text-center whitespace-nowrap no-print">សកម្មភាព</th>
+          </tr></thead>
+          <tbody id="docs-tbody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ATTENDANCE ============ -->
+<div id="view-attendance" class="view-section hidden space-y-6">
+  <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 no-print flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h2 class="text-base font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-user-clock text-blue-600"></i> គ្រប់គ្រង និងកត់ត្រាវត្តមានមន្ត្រី</h2>
+      <p class="text-xs text-slate-500 mt-0.5">ម៉ោងចូលធ្វើការ <strong id="att-start-label"></strong> (ចូលក្រោយម៉ោងនេះ = ចូលយឺត) • មន្ត្រីម្នាក់ៗកត់ត្រាវត្តមានខ្លួនឯងបាន ហើយអ្នកគ្រប់គ្រងកែបានគ្រប់គ្នា</p>
+    </div>
+    <div class="flex gap-2 shrink-0">
+      <button onclick="attSelfCheck('in')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-right-to-bracket"></i> ខ្ញុំចូលធ្វើការ</button>
+      <button onclick="attSelfCheck('out')" class="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-4 py-2.5 rounded-xl text-xs shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-right-from-bracket"></i> ខ្ញុំចេញពីធ្វើការ</button>
+    </div>
+  </div>
+
+  <section id="att-daily-section" class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 print-container">
+    <div class="flex flex-wrap items-end justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+      <div class="flex items-end gap-3">
+        <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">ជ្រើសរើសថ្ងៃ</label><input type="date" id="att-date" onchange="onAttDateChange()" class="text-xs border border-slate-300 rounded-xl px-3 py-1.5 bg-slate-50 outline-none"></div>
+        <h3 class="font-bold text-slate-800 text-sm pb-1.5">វត្តមានប្រចាំថ្ងៃ — <span id="att-date-label"></span></h3>
+      </div>
+      <div class="flex flex-wrap gap-2 no-print">
+        <button onclick="attMarkAllPresent()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-medium"><i class="fa-solid fa-check-double"></i> កំណត់ជាមានវត្តមានទាំងអស់</button>
+        <button onclick="saveAttendanceDay()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកវត្តមាន</button>
+        <button onclick="printAttendance('daily')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-medium"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+      </div>
+    </div>
+    <div id="att-day-stats" class="flex flex-wrap gap-2 mb-4"></div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead><tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 border-b border-slate-200">
+          <th class="py-2.5 px-3 w-10 text-center">លរ</th><th class="py-2.5 px-3">មន្ត្រី</th><th class="py-2.5 px-3">តួនាទី</th>
+          <th class="py-2.5 px-3 w-44">ស្ថានភាព</th><th class="py-2.5 px-3 w-28">ម៉ោងចូល</th><th class="py-2.5 px-3 w-28">ម៉ោងចេញ</th><th class="py-2.5 px-3 min-w-[160px]">កំណត់សម្គាល់</th>
+        </tr></thead>
+        <tbody id="att-daily-body" class="divide-y divide-slate-100"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="att-monthly-section" class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 print-container report-font">
+    <div class="flex flex-wrap items-end justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+      <div class="flex items-end gap-3">
+        <div class="no-print"><label class="block text-[11px] font-semibold text-slate-500 mb-1">ជ្រើសរើសខែ</label><input type="month" id="att-month" onchange="renderAttendance()" class="text-xs border border-slate-300 rounded-xl px-3 py-1.5 bg-slate-50 outline-none"></div>
+        <h3 class="font-bold text-slate-800 text-sm pb-1.5">តារាងសរុបវត្តមានប្រចាំខែ — <span id="att-month-label"></span></h3>
+      </div>
+      <div class="flex gap-2 no-print">
+        <button onclick="exportAttendanceCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-medium"><i class="fa-solid fa-file-csv"></i> CSV</button>
+        <button onclick="printAttendance('monthly')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm"><i class="fa-solid fa-print"></i> បោះពុម្ពរបាយការណ៍ខែ</button>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse text-[11px]" id="att-month-table"></table>
+    </div>
+    <p class="text-[10px] text-slate-500 mt-3">សញ្ញា៖ ✓ មានវត្តមាន • យ ចូលយឺត • ច ច្បាប់សម្រាក • ប បេសកកម្ម • អ អវត្តមាន។ អត្រាវត្តមាន = (មាន + យឺត + បេសកកម្ម) ÷ ចំនួនថ្ងៃដែលបានកត់ត្រា។ ជួរពណ៌ប្រផេះ = ថ្ងៃសៅរ៍-អាទិត្យ។</p>
+  </section>
+</div>
+
+<!-- ============ REPORTS ============ -->
+<div id="view-reports" class="view-section hidden space-y-6">
+  <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-wrap items-end justify-between gap-4 no-print">
+    <div class="flex flex-wrap items-end gap-3">
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-500 mb-1">ប្រភេទរបាយការណ៍</label>
+        <select id="report-type" onchange="handleReportTypeChange()" class="text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 font-semibold text-blue-900 outline-none">
+          <option value="daily">របាយការណ៍ប្រចាំថ្ងៃ</option><option value="weekly">របាយការណ៍ប្រចាំសប្តាហ៍</option><option value="monthly" selected>របាយការណ៍ប្រចាំខែ</option><option value="annual">របាយការណ៍ប្រចាំឆ្នាំ</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-500 mb-1">មន្ត្រីសាមី (ជម្រើស)</label>
+        <select id="report-staff" onchange="generateReport()" class="text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"><option value="all">បូកសរុបរួមទាំងការិយាល័យ</option></select>
+      </div>
+      <div id="period-daily-box" class="hidden"><label class="block text-[11px] font-semibold text-slate-500 mb-1">ជ្រើសរើសថ្ងៃ</label><input type="date" id="report-date" onchange="generateReport()" class="text-xs border border-slate-300 rounded-xl px-3 py-1.5 bg-slate-50 outline-none"></div>
+      <div id="period-weekly-box" class="hidden"><label class="block text-[11px] font-semibold text-slate-500 mb-1">ថ្ងៃចាប់ផ្តើមសប្តាហ៍</label><input type="date" id="report-week-start" onchange="generateReport()" class="text-xs border border-slate-300 rounded-xl px-3 py-1.5 bg-slate-50 outline-none"></div>
+      <div id="period-monthly-box"><label class="block text-[11px] font-semibold text-slate-500 mb-1">ជ្រើសរើសខែ និងឆ្នាំ</label><input type="month" id="report-month" onchange="generateReport()" class="text-xs border border-slate-300 rounded-xl px-3 py-1.5 bg-slate-50 outline-none"></div>
+      <div id="period-annual-box" class="hidden"><label class="block text-[11px] font-semibold text-slate-500 mb-1">ជ្រើសរើសឆ្នាំ</label><select id="report-year" onchange="generateReport()" class="text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></select></div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="generateReport()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5"><i class="fa-solid fa-rotate"></i> ផ្ទុកឡើងវិញ</button>
+      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition flex items-center gap-1.5"><i class="fa-solid fa-print"></i> បោះពុម្ព / រក្សាទុក PDF (A4)</button>
+    </div>
+  </div>
+
+  <div class="print-container report-font bg-white rounded-2xl p-8 sm:p-12 shadow-md border border-slate-200 max-w-4xl mx-auto text-slate-900">
+    <div class="text-center space-y-1 mb-6">
+      <h3 class="font-moul text-sm sm:text-base">ព្រះរាជាណាចក្រកម្ពុជា</h3>
+      <h4 class="font-moul text-xs sm:text-sm">ជាតិ សាសនា ព្រះមហាក្សត្រ</h4>
+      <div class="w-32 h-0.5 bg-slate-800 mx-auto my-2"></div>
+    </div>
+    <div class="flex justify-between items-start text-xs sm:text-sm mb-6">
+      <div>
+        <p class="font-bold">ក្រសួងអប់រំ យុវជន និងកីឡា</p>
+        <p class="font-bold">មន្ទីរអប់រំ យុវជន និងកីឡាខេត្តពោធិ៍សាត់</p>
+        <p class="font-semibold text-blue-900">ការិយាល័យបុគ្គលិក និងបណ្តុះបណ្តាល</p>
+      </div>
+      <div class="text-right"><p id="rep-solar-date" class="italic"></p></div>
+    </div>
+    <div class="text-center my-8 space-y-2">
+      <h2 id="rep-main-title" class="font-moul text-base sm:text-lg text-blue-950 leading-relaxed"></h2>
+      <p id="rep-sub-title" class="text-xs sm:text-sm font-semibold text-slate-600"></p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 border border-slate-300 p-3 rounded-xl mb-6 text-center text-xs">
+      <div><span class="text-slate-500 block">សរុបសកម្មភាពការងារ៖</span><strong id="rep-stat-total" class="text-blue-900 text-sm"></strong></div>
+      <div><span class="text-slate-500 block">សម្រេចរួចរាល់៖</span><strong id="rep-stat-done" class="text-emerald-700 text-sm"></strong></div>
+      <div><span class="text-slate-500 block">កំពុងអនុវត្ត / រង់ចាំ៖</span><strong id="rep-stat-pending" class="text-amber-700 text-sm"></strong></div>
+      <div><span class="text-slate-500 block">លិខិតចូល / លិខិតចេញ៖</span><strong id="rep-stat-docs" class="text-indigo-800 text-sm"></strong></div>
+    </div>
+
+    <div id="rep-summary-box" class="my-6 hidden">
+      <h4 class="font-bold text-xs mb-2">១. សង្ខេបលទ្ធផលតាមមន្ត្រី</h4>
+      <table class="w-full text-left border-collapse text-xs">
+        <thead><tr class="bg-slate-200 font-semibold">
+          <th class="py-2 px-2 border border-slate-400">មន្ត្រី</th><th class="py-2 px-2 border border-slate-400">តួនាទី</th>
+          <th class="py-2 px-2 border border-slate-400 text-center w-20">សកម្មភាព</th><th class="py-2 px-2 border border-slate-400 text-center w-20">សម្រេច</th><th class="py-2 px-2 border border-slate-400 text-center w-20">អត្រា</th>
+        </tr></thead>
+        <tbody id="rep-summary-body"></tbody>
+      </table>
+    </div>
+
+    <h4 id="rep-detail-title" class="font-bold text-xs mb-2">២. តារាងលម្អិតសកម្មភាពការងារ</h4>
+    <div class="mb-6">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="bg-slate-200 text-slate-900 font-semibold">
+            <th class="py-2.5 px-2 text-center border border-slate-400 w-12">លរ</th>
+            <th class="py-2.5 px-2 text-center border border-slate-400 w-24">កាលបរិច្ឆេទ</th>
+            <th class="py-2.5 px-3 border border-slate-400">ខ្លឹមសារសកម្មភាពការងារអនុវត្ត</th>
+            <th class="py-2.5 px-2 text-center border border-slate-400 w-24">បរិមាណ</th>
+            <th class="py-2.5 px-2 border border-slate-400 w-32">មន្ត្រីទទួលបន្ទុក</th>
+            <th class="py-2.5 px-2 text-center border border-slate-400 w-28">ស្ថានភាព</th>
+          </tr>
+        </thead>
+        <tbody id="rep-table-body"></tbody>
+      </table>
+    </div>
+
+    <div id="rep-docs-box" class="my-6 hidden">
+      <h4 id="rep-docs-title" class="font-bold text-xs mb-2">៣. ស្ថិតិ និងបញ្ជីលិខិតរដ្ឋបាលចូល-ចេញក្នុងកំឡុងពេល</h4>
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="bg-slate-200 text-slate-900 font-semibold">
+            <th class="py-2 px-2 text-center border border-slate-400 w-10">លរ</th>
+            <th class="py-2 px-2 text-center border border-slate-400 w-20">ប្រភេទ</th>
+            <th class="py-2 px-2 border border-slate-400 w-28">លេខចុះបញ្ជី</th>
+            <th class="py-2 px-2 text-center border border-slate-400 w-24">កាលបរិច្ឆេទ</th>
+            <th class="py-2 px-2 border border-slate-400">ប្រភព/គោលដៅ និងកម្មវត្ថុ</th>
+            <th class="py-2 px-2 text-center border border-slate-400 w-24">ស្ថានភាព</th>
+          </tr>
+        </thead>
+        <tbody id="rep-docs-body"></tbody>
+      </table>
+    </div>
+
+    <div id="rep-framework-context" class="my-6 p-4 rounded-xl bg-blue-50/50 border border-blue-200 text-xs space-y-2 break-inside-avoid">
+      <h4 class="font-bold text-blue-950"><i class="fa-solid fa-circle-info text-blue-600"></i> ភារកិច្ចតាមក្របខ័ណ្ឌពេលវេលាប្រចាំខែ និងស្ថានភាពកត់ត្រា៖</h4>
+      <div id="rep-framework-list" class="space-y-1 text-slate-700"></div>
+    </div>
+
+    <div class="mt-12 pt-6 grid grid-cols-2 gap-8 text-center text-xs sm:text-sm break-inside-avoid">
+      <div>
+        <p class="font-bold">បានឃើញ និងឯកភាព</p>
+        <p class="font-moul text-xs mt-0.5">ប្រធានមន្ទីរអប់រំ យុវជន និងកីឡា</p>
+        <div class="h-24"></div>
+        <p class="font-bold">.................</p>
+      </div>
+      <div>
+        <p id="rep-sign-date" class="italic mb-1"></p>
+        <p id="rep-sign-role" class="font-bold"></p>
+        <div class="h-24"></div>
+        <p id="rep-sign-name" class="font-bold"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto no-print">
+  <p>© ២០២៦ ការិយាល័យបុគ្គលិក និងបណ្តុះបណ្តាល - មន្ទីរអប់រំ យុវជន និងកីឡាខេត្តពោធិ៍សាត់</p>
+</footer>
+
+<!-- Login overlay -->
+<div id="login-overlay" class="hidden fixed inset-0 z-[60] bg-gradient-to-br from-blue-950 via-indigo-900 to-blue-900 flex items-center justify-center p-4 no-print">
+  <form onsubmit="doLogin(event)" class="bg-white rounded-3xl max-w-sm w-full p-7 shadow-2xl space-y-4">
+    <div class="text-center">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-900 text-amber-300 flex items-center justify-center text-2xl mb-3"><i class="fa-solid fa-landmark"></i></div>
+      <h2 class="font-moul text-sm text-blue-950">ចូលប្រើប្រព័ន្ធ</h2>
+      <p class="text-xs text-slate-500 mt-1">ការិយាល័យបុគ្គលិក និងបណ្តុះបណ្តាល ខេត្តពោធិ៍សាត់</p>
+    </div>
+    <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">អ៊ីមែល</label><input type="email" id="login-email" required autocomplete="username" class="w-full text-sm border border-slate-300 rounded-xl px-3 py-2.5 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+    <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">លេខសម្ងាត់</label><input type="password" id="login-password" required autocomplete="current-password" class="w-full text-sm border border-slate-300 rounded-xl px-3 py-2.5 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+    <p id="login-error" class="text-xs text-red-600 min-h-[1rem]"></p>
+    <button type="submit" id="login-btn" class="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-60 text-white font-semibold py-2.5 rounded-xl text-sm transition">ចូលប្រើ</button>
+    <p class="text-[11px] text-slate-400 text-center">គណនីត្រូវបង្កើតដោយអ្នកគ្រប់គ្រង។ បើភ្លេចលេខសម្ងាត់ សូមទាក់ទងប្រធានការិយាល័យ។</p>
+  </form>
+</div>
+
+<div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs no-print">
+  <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i><span id="toast-msg"></span>
+</div>
+
+<!-- Assignee modal -->
+<div id="assignee-modal" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 hidden no-print">
+  <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col overflow-hidden">
+    <div class="flex items-start justify-between px-6 pt-5 pb-3 border-b border-slate-100 gap-3 shrink-0">
+      <div>
+        <h3 class="font-bold text-slate-900 text-sm">ប្តូរ/បន្ថែមមន្ត្រីទទួលបន្ទុក</h3>
+        <p id="as-task-title" class="text-xs text-slate-500 mt-0.5"></p>
+      </div>
+      <button type="button" onclick="closeAssigneeModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg"><i class="fa-solid fa-xmark text-base"></i></button>
+    </div>
+    <form onsubmit="saveAssignee(event)" class="flex flex-col min-h-0 flex-1">
+      <input type="hidden" id="as-task-id">
+      <div class="overflow-y-auto px-6 py-4 space-y-3.5 min-h-0">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-1.5">ជ្រើសរើសពីបញ្ជីមន្ត្រី (អាចជ្រើសច្រើននាក់)</label>
+          <div id="as-staff-list" class="space-y-1.5"></div>
+        </div>
+        <div>
+          <label for="as-extra" class="block text-[11px] font-semibold text-slate-600 mb-1">ឬបញ្ចូលឈ្មោះផ្សេង (បើច្រើននាក់ ចែកដោយ /)</label>
+          <input type="text" id="as-extra" placeholder="ឧ. ឈ្មោះមន្ត្រីថ្មី" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+      <div class="shrink-0 px-6 py-3 border-t border-slate-100 bg-white flex justify-end gap-2">
+        <button type="button" onclick="closeAssigneeModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 px-4 rounded-xl text-xs">បោះបង់</button>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-xl text-xs shadow">រក្សាទុក</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Task modal -->
+<div id="task-modal" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 hidden no-print">
+  <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-6 pt-5 pb-3 border-b border-slate-100 shrink-0">
+      <h3 id="task-modal-title" class="font-bold text-slate-900 text-sm"></h3>
+      <button type="button" onclick="closeTaskModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg"><i class="fa-solid fa-xmark text-base"></i></button>
+    </div>
+    <form onsubmit="saveTask(event)" class="flex flex-col min-h-0 flex-1">
+      <input type="hidden" id="tk-id">
+      <div class="overflow-y-auto px-6 py-4 space-y-3.5 min-h-0">
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">បរិយាយការងារ *</label>
+          <textarea id="tk-title" required rows="2" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500"></textarea></div>
+        <div>
+          <div class="flex items-center justify-between mb-1.5"><label class="block text-[11px] font-semibold text-slate-600">ខែត្រូវអនុវត្ត *</label>
+            <span class="text-[11px]"><button type="button" onclick="tkMonths(true)" class="text-blue-600 font-semibold hover:underline">ទាំង ១២ ខែ</button> · <button type="button" onclick="tkMonths(false)" class="text-slate-500 hover:underline">សម្អាត</button></span></div>
+          <div id="tk-months" class="grid grid-cols-4 gap-1.5"></div>
+        </div>
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1.5">មន្ត្រីទទួលបន្ទុក (អាចជ្រើសច្រើននាក់)</label><div id="tk-staff-list" class="space-y-1.5"></div></div>
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">ឬបញ្ចូលឈ្មោះផ្សេង (ចែកដោយ /)</label><input type="text" id="tk-extra" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500"></div>
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">កំណត់សម្គាល់</label><input type="text" id="tk-note" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500"></div>
+      </div>
+      <div class="shrink-0 px-6 py-3 border-t border-slate-100 bg-white flex items-center justify-between gap-2">
+        <button type="button" id="tk-delete" onclick="deleteTask($('tk-id').value)" class="text-red-600 hover:bg-red-50 font-medium py-2 px-3 rounded-xl text-xs"><i class="fa-solid fa-trash"></i> លុប</button>
+        <div class="flex gap-2 ml-auto">
+          <button type="button" onclick="closeTaskModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 px-4 rounded-xl text-xs">បោះបង់</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-xl text-xs shadow">រក្សាទុក</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Staff modal -->
+<div id="staff-modal" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 hidden no-print">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <h3 id="staff-modal-title" class="font-bold text-slate-900 text-sm"></h3>
+      <button onclick="closeStaffModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg"><i class="fa-solid fa-xmark text-base"></i></button>
+    </div>
+    <form id="staff-form" onsubmit="saveStaff(event)" class="space-y-3.5">
+      <input type="hidden" id="edit-staff-id">
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">អត្តលេខ *</label><input type="text" id="st-id" required class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">គោត្តនាម-នាម *</label><input type="text" id="st-name" required class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">ភេទ</label><select id="st-gender" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"><option value="ប">ប្រុស (ប)</option><option value="ស">ស្រី (ស)</option></select></div>
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">តួនាទី *</label><input type="text" id="st-role" required class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">ក្របខ័ណ្ឌ</label><input type="text" id="st-framework" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">កាំប្រាក់ / ថ្នាក់</label><input type="text" id="st-rank" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">ថ្ងៃចូលបម្រើការងារ (ថ្ងៃ/ខែ/ឆ្នាំ)</label><input type="text" id="st-start-date" placeholder="01/10/2001" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+        <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">ថ្ងៃឡើងកាំចុងក្រោយ</label><input type="text" id="st-last-rank" placeholder="13/04/2020" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+      </div>
+      <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">អ៊ីមែលចូលប្រព័ន្ធ (Gmail របស់មន្ត្រី)</label><input type="email" id="st-email" placeholder="name@gmail.com" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+      <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">កម្រិតវប្បធម៌</label><input type="text" id="st-edu" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></div>
+      <div><label class="block text-[11px] font-semibold text-slate-600 mb-1">ភារកិច្ចស្នូលទទួលបន្ទុក (មួយជួរមួយ)</label><textarea id="st-duties" rows="4" class="w-full text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 outline-none"></textarea></div>
+      <div class="pt-2 flex justify-end gap-2">
+        <button type="button" onclick="closeStaffModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 px-4 rounded-xl text-xs">បោះបង់</button>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-xl text-xs shadow">រក្សាទុក</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+"use strict";
+// =====================================================================
+// 1. MASTER DATA
+// =====================================================================
+const defaultStaffData = [
+  {
+    no: 1, id: "1700300245", name: "ម៉ែន សំអាត", gender: "ប", role: "ប្រធានការិយាល័យ",
+    framework: "គ្រូបង្រៀនកម្រិតមូលដ្ឋាន", startDate: "23/08/1991", rank: "ខ.១.៤", lastRankDate: "13/04/2020",
+    decreeNo: "1811 / 53391", education: "បរិញ្ញាបត្រជាន់ខ្ពស់",
+    duties: [
+      "ទទួលបន្ទុកក្តាប់រួម និងការងារតែងតាំងមុខដំណែងជូនមន្ត្រីអប់រំ",
+      "ការងារទំនេរគ្មានបៀវត្ស និងចូលបម្រើការងារវិញ",
+      "ការងារផ្លាស់ប្តូរទីកន្លែងបម្រើការងារ",
+      "ការងារតែងតាំងស៊ប់ក្នុងក្របខ័ណ្ឌ",
+      "ការងាររៀបចំផែនការចុះពិនិត្យតាមដានការអនុវត្តការងារនៅតាមសាលារៀន និងការិ.អយក",
+      "តាមការចាត់ចែងរបស់ថ្នាក់ដឹកនាំមន្ទីរ"
+    ]
+  },
+  {
+    no: 2, id: "1781000048", name: "គឹម តុងហេង", gender: "ប", role: "អនុប្រធានការិយាល័យ",
+    framework: "គ្រូបង្រៀនកម្រិតមូលដ្ឋាន", startDate: "01/10/2001", rank: "ខ.១.៦", lastRankDate: "06/06/2022",
+    decreeNo: "1811 / 55507", education: "បរិញ្ញាបត្រជាន់ខ្ពស់",
+    duties: [
+      "ការងារគ្រប់គ្រងប្រព័ន្ធ HRMIS, HRCPD",
+      "ការងារគ្រប់គ្រងការអភិវឌ្ឍវិជ្ជាជីវៈជាប្រចាំ និងគន្លងអាជីពគ្រូបង្រៀន",
+      "ការងារស្ថិតិក្របខ័ណ្ឌ និងផែនការក្របខ័ណ្ឌ",
+      "រៀបចំរចនាសម្ព័ន្ធថ្នាក់ដឹកនាំនិងមន្ត្រីជំនាញតាមការិយាល័យ",
+      "រៀបចំនិងរក្សាទុកបំណែងចែកភារកិច្ចថ្នាក់ដឹកនាំ និងការិយាល័យជំនាញ",
+      "ការងារគ្រប់គ្រងសំណុំឯកសារបុគ្គលិកអប់រំ",
+      "តាមការចាត់ចែងរបស់ប្រធានការិយាល័យ"
+    ]
+  },
+  {
+    no: 3, id: "1781500018", name: "អ៊ុក សុខឃឿន", gender: "ប", role: "អនុប្រធានការិយាល័យ",
+    framework: "គ្រូបង្រៀនកម្រិតឧត្តម", startDate: "28/10/1999", rank: "ក.៣.២", lastRankDate: "13/04/2020",
+    decreeNo: "1811 / 53274", education: "សញ្ញាបត្របរិញ្ញាបត្រ",
+    duties: [
+      "ការងាររដ្ឋបាលក្នុងការិយាល័យបុគ្គលិក និងការងារគ្រប់គ្រងវត្តមានក្នុងការិយាល័យ",
+      "ការងារគ្រោងបៀវត្ស, ESP, BSP, AOP",
+      "ការងាររបាយការណ៍សមិទ្ធកម្មប្រចាំត្រីមាស និងរបាយការណ៍ប្រចាំខែ/ឆ្នាំ",
+      "ការងារបេសកកម្មរបស់ថ្នាក់ដឹកនាំនិងមន្ត្រីក្នុងការិយាល័យ (លិខិតបង្គាប់ការ និងលិខិតឧទ្ទេសនាម)",
+      "ពិនិត្យការងារកែប្រែស្ថានភាពរដ្ឋបាល និងគ្រួសារមន្ត្រី",
+      "ពិនិត្យការងារបើកផ្តល់បៀវត្សបុគ្គលិកអប់រំក្រោមឱវាទមន្ទីរ",
+      "ជួយការងារ HRMIS, HRCPD, CPD និងគន្លងអាជីពគ្រូបង្រៀន",
+      "ពិនិត្យការងារដំឡើងថ្នាក់គ្រប់ប្រភេទ"
+    ]
+  },
+  {
+    no: 4, id: "1691500090", name: "ធាម ពេជ្រ", gender: "ប", role: "មន្ត្រីការិយាល័យ",
+    framework: "គ្រូបង្រៀនកម្រិតមូលដ្ឋាន", startDate: "01/09/1989", rank: "ខ.១.៦", lastRankDate: "13/04/2020",
+    decreeNo: "1811 / 55375", education: "មធ្យមសិក្សាទុតិយភូមិ",
+    duties: [
+      "ការងារដាក់មន្ត្រីឱ្យចូលនិវត្តន៍ (តាមកាលកំណត់ និងមុនកំណត់)",
+      "ការងារលុបឈ្មោះចេញពីក្របខ័ណ្ឌ",
+      "តាមការចាត់ចែងរបស់ប្រធានការិយាល័យ"
+    ]
+  },
+  {
+    no: 5, id: "1801500064", name: "ឈឹម សុខា", gender: "ប", role: "មន្ត្រីការិយាល័យ",
+    framework: "គ្រូបង្រៀនកម្រិតមូលដ្ឋាន", startDate: "01/10/2001", rank: "ខ.៣.១", lastRankDate: "13/04/2021",
+    decreeNo: "659 / 13538", education: "សញ្ញាបត្រទុតិយភូមិ",
+    duties: [
+      "ការងារតំបន់ជួបការលំបាក",
+      "ការងារពង្រាយគ្រូឡើងវិញ (ក្នុងឃុំ ឆ្លងឃុំ ឆ្លងស្រុក ឆ្លងខេត្ត)",
+      "ការងារដំឡើងថ្នាក់តាមវេន និងសញ្ញាបត្រ (កណ្តៀង - តាលោ)",
+      "តាមការចាត់ចែងរបស់ប្រធានការិយាល័យ"
+    ]
+  },
+  {
+    no: 6, id: "2901500026", name: "ហង្ស ដាលី", gender: "ស", role: "មន្ត្រីការិយាល័យ",
+    framework: "គ្រូបង្រៀនកម្រិតមូលដ្ឋាន", startDate: "01/10/2010", rank: "ខ.២.៣", lastRankDate: "13/04/2020",
+    decreeNo: "1811 / 53717", education: "សញ្ញាបត្រទុតិយភូមិ",
+    duties: [
+      "ការងារលំហែមាតុភាព និងសុំច្បាប់សម្រាកផ្សេងៗ (ជំងឺ ប្រចាំឆ្នាំ ធុរៈផ្ទាល់ខ្លួន បន្តការសិក្សា)",
+      "ការងារចំណូល-ចំណាយថវិកា (ស.ប.ស.ខ)",
+      "ការងារដំឡើងថ្នាក់តាមវេន និងសញ្ញាបត្រ (ក្រគរ - វាលវែង)",
+      "ការងារចេញវិញ្ញាបនបត្ររដ្ឋបាលជូនបុគ្គលិកអប់រំ",
+      "ការងារគ្រប់គ្រងសំណុំឯកសារបុគ្គលិកអប់រំ",
+      "តាមការចាត់ចែងរបស់ប្រធានការិយាល័យ"
+    ]
+  },
+  {
+    no: 7, id: "2941500014", name: "ច័ន្ទ ដាណែ", gender: "ស", role: "មន្ត្រីការិយាល័យ",
+    framework: "គ្រូបង្រៀនកម្រិតបឋម", startDate: "01/10/2015", rank: "គ.៨", lastRankDate: "13/04/2021",
+    decreeNo: "659 / 13949", education: "សញ្ញាបត្រទុតិយភូមិ",
+    duties: [
+      "ការងារដំឡើងថ្នាក់តាមវេន និងសញ្ញាបត្រ (ក្រុង + បាកាន + មន្ទីរ) និងបូកសរុប",
+      "ការងារគ្រប់គ្រងប្រកាស, អនុក្រឹត្យ, ព្រះរាជក្រឹត្យ ដំឡើងថ្នាក់ និងប្រកាសតាំងស៊ប់",
+      "ការងាររៀបចំធ្វើប័ណ្ណ (ប.ស.ស) ជូនមន្ត្រីអប់រំ",
+      "ការងារគ្រប់គ្រងសំណុំឯកសារបុគ្គលិកអប់រំ",
+      "តាមការចាត់ចែងរបស់ប្រធានការិយាល័យ"
+    ]
+  },
+  {
+    no: 8, id: "1951500025", name: "ខែក គឹមថេង", gender: "ប", role: "មន្ត្រីការិយាល័យ",
+    framework: "គ្រូបង្រៀនកម្រិតបឋម", startDate: "17/04/1995", rank: "គ.៨", lastRankDate: "13/04/2020",
+    decreeNo: "1811 / 55220", education: "សញ្ញាបត្រទុតិយភូមិ",
+    duties: [
+      "ការងារគ្រប់គ្រងលិខិតចេញ - លិខិតចូល",
+      "ការងារកែប្រែស្ថានភាពរដ្ឋបាល និងគ្រួសារមន្ត្រីរាជការ",
+      "ការងារបើកផ្តល់បៀវត្សមន្ត្រីអប់រំ និងមន្ត្រីកិច្ចសន្យា",
+      "ការងារផ្តាច់បៀវត្សបុគ្គលិកអប់រំផ្លាស់ចេញ",
+      "ជួយការងារតែងតាំងមុខដំណែងជូនមន្ត្រីអប់រំ"
+    ]
+  }
+];
+
+const frameworkTasksData = [
+  { id: 1, title: "ដាក់ឱ្យស្ថិតក្នុងភាពទំនេរគ្មានបៀវត្ស", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "ដាក់ពាក្យមុន២ខែនៃកាលបរិច្ឆេទកំណត់" },
+  { id: 2, title: "ដាក់ឱ្យស្ថិតក្នុងភាពទំនេរគ្មានបៀវត្ស (បន្ត)", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "ដាក់ពាក្យមុន២ខែនៃកាលបរិច្ឆេទកំណត់" },
+  { id: 3, title: "ចូលបម្រើការងារជាថ្មីវិញ (ព្យួរចូលវិញ)", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "ដាក់ពាក្យមុន២ខែនៃកាលបរិច្ឆេទកំណត់" },
+  { id: 4, title: "ផ្លាស់ប្តូរទីកន្លែងបម្រើការងារ (ក្នុងខេត្ត)", months: [6,7,8,9], assignee: "ម៉ែន សំអាត", note: "ដាក់ពាក្យមុន៦ខែនៃកាលបរិច្ឆេទកំណត់" },
+  { id: 5, title: "ផ្លាស់ប្តូរទីកន្លែងបម្រើការងារ (ឆ្លងខេត្ត)", months: [6,7,8,9], assignee: "ម៉ែន សំអាត", note: "ចាប់ពីខែតុលា ឆ្នាំ (n-1)" },
+  { id: 6, title: "ពង្រាយក្នុងឃុំ", months: [8,9,10], assignee: "ឈឹម សុខា", note: "ចាប់ពីខែតុលា ឆ្នាំ (n-1)" },
+  { id: 7, title: "ពង្រាយឆ្លងឃុំ", months: [8,9,10], assignee: "ឈឹម សុខា", note: "ចាប់ពីខែតុលា ឆ្នាំ (n-1)" },
+  { id: 8, title: "គ្រូពង្រាយឆ្លងស្រុក", months: [8,9,10], assignee: "ឈឹម សុខា", note: "តាមផែនការពង្រាយគ្រូ" },
+  { id: 9, title: "ពង្រាយឆ្លងខេត្ត", months: [8,9,10], assignee: "ឈឹម សុខា", note: "តាមការសម្រេចរបស់ក្រសួង" },
+  { id: 10, title: "សុំច្បាប់សម្រាកព្យាបាលជំងឺ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ហង្ស ដាលី", note: "អនុវត្តជាប្រចាំពេលមានសំណើ" },
+  { id: 11, title: "សុំច្បាប់សម្រាកប្រចាំឆ្នាំ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ហង្ស ដាលី", note: "តាមតម្រូវការមន្ត្រី" },
+  { id: 12, title: "សុំច្បាប់សម្រាកមានធុរៈផ្ទាល់ខ្លួន", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ហង្ស ដាលី", note: "អនុវត្តជាប្រចាំ" },
+  { id: 13, title: "សុំច្បាប់សម្រាកលំហែមាតុភាព", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ហង្ស ដាលី", note: "អនុវត្តជាប្រចាំ" },
+  { id: 14, title: "សុំច្បាប់បន្តការសិក្សា", months: [8,9,10,11], assignee: "ហង្ស ដាលី", note: "មុនបវេសនកាលឆ្នាំសិក្សាថ្មី" },
+  { id: 15, title: "សុំច្បាប់ឈប់សម្រាកពិសេស (ធ្វើការបោះឆ្នោត)", months: [4,5,6,7], assignee: "ហង្ស ដាលី", note: "តាមប្រតិទិន គ.ជ.ប" },
+  { id: 16, title: "លុបឈ្មោះចេញពីក្របខ័ណ្ឌ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ធាម ពេជ្រ", note: "ពេលមានមន្ត្រីបោះបង់ការងារ/មរណភាព" },
+  { id: 17, title: "ដាក់ឱ្យចូលនិវត្តន៍មុនកំណត់", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ធាម ពេជ្រ", note: "មុនចូលនិវត្តន៍១ឆ្នាំ" },
+  { id: 18, title: "ដាក់ឱ្យចូលនិវត្តន៍តាមកាលកំណត់", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ធាម ពេជ្រ", note: "រៀបចំឯកសារមុនចូលនិវត្តន៍១ឆ្នាំ" },
+  { id: 19, title: "គ្រូចេញបម្រើការងារថ្មី", months: [9,10,11], assignee: "គឹម តុងហេង", note: "ទទួលគ្រូថ្មី និងបញ្ចូល HRMIS" },
+  { id: 20, title: "តាំងស៊ប់ក្នុងក្របខ័ណ្ឌ", months: [9,10,11,12], assignee: "ម៉ែន សំអាត / ច័ន្ទ ដាណែ", note: "ក្រោយបម្រើការងារគ្រប់ ១ ឆ្នាំ" },
+  { id: 21, title: "ដំឡើងថ្នាក់តាមវេន (ដោយប្រកាស)", months: [1,2,3,10,11,12], assignee: "ច័ន្ទ ដាណែ / ឈឹម សុខា / ហង្ស ដាលី", note: "ឆ្នាំ (n-1) រៀបចំឯកសារ" },
+  { id: 22, title: "ដំឡើងថ្នាក់តាមវេន (ដោយអនុក្រឹត្យ)", months: [1,2,3,10,11,12], assignee: "ច័ន្ទ ដាណែ / ឈឹម សុខា / ហង្ស ដាលី", note: "ឆ្នាំ (n-1) រៀបចំឯកសារ" },
+  { id: 23, title: "ដំឡើងថ្នាក់តាមវេន (ដោយព្រះរាជក្រឹត្យ)", months: [1,2,3,10,11,12], assignee: "ច័ន្ទ ដាណែ / ឈឹម សុខា / ហង្ស ដាលី", note: "ឆ្នាំ (n-1) រៀបចំឯកសារ" },
+  { id: 24, title: "ដំឡើងថ្នាក់តាមសញ្ញាបត្រ (ដោយប្រកាស)", months: [2,3,4,9,10], assignee: "ច័ន្ទ ដាណែ / ឈឹម សុខា / ហង្ស ដាលី", note: "ឆ្នាំ (n-1) ពិនិត្យសញ្ញាបត្រ" },
+  { id: 25, title: "ដំឡើងថ្នាក់តាមសញ្ញាបត្រ (ដោយអនុក្រឹត្យ)", months: [2,3,4,9,10], assignee: "ច័ន្ទ ដាណែ / ឈឹម សុខា / ហង្ស ដាលី", note: "ឆ្នាំ (n-1)" },
+  { id: 26, title: "ដំឡើងថ្នាក់តាមសញ្ញាបត្រ (ដោយព្រះរាជក្រឹត្យ)", months: [2,3,4,9,10], assignee: "ច័ន្ទ ដាណែ / ឈឹម សុខា / ហង្ស ដាលី", note: "ឆ្នាំ (n-1)" },
+  { id: 27, title: "ដំឡើងថ្នាក់កិត្តិយស (ដោយប្រកាស)", months: [3,4,5], assignee: "អ៊ុក សុខឃឿន / ច័ន្ទ ដាណែ", note: "មុនចូលនិវត្តន៍ ៦ខែ-១ឆ្នាំ" },
+  { id: 28, title: "ដំឡើងថ្នាក់កិត្តិយស (ដោយអនុក្រឹត្យ)", months: [3,4,5], assignee: "អ៊ុក សុខឃឿន / ច័ន្ទ ដាណែ", note: "មុនចូលនិវត្តន៍" },
+  { id: 29, title: "ដំឡើងថ្នាក់កិត្តិយស (ដោយព្រះរាជក្រឹត្យ)", months: [3,4,5], assignee: "អ៊ុក សុខឃឿន / ច័ន្ទ ដាណែ", note: "មុនចូលនិវត្តន៍" },
+  { id: 30, title: "តែងតាំងមុខដំណែងជាប្រធានមន្ទីរ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "តាមការចាត់តាំងរបស់ក្រសួង" },
+  { id: 31, title: "តែងតាំងមុខដំណែងជាអនុប្រធានមន្ទីរ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "តាមតម្រូវការជាក់ស្តែង" },
+  { id: 32, title: "តែងតាំងមុខដំណែងជាប្រធានការិយាល័យ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "តាមតម្រូវការជាក់ស្តែង" },
+  { id: 33, title: "តែងតាំងមុខដំណែងជាអនុប្រធានការិយាល័យ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "តាមតម្រូវការជាក់ស្តែង" },
+  { id: 34, title: "តែងតាំងមុខដំណែងជានាយកវិទ្យាល័យ", months: [6,7,8,9,10], assignee: "ម៉ែន សំអាត / ខែក គឹមថេង", note: "មុនបើកបវេសនកាល" },
+  { id: 35, title: "តែងតាំងមុខដំណែងជានាយករងវិទ្យាល័យ", months: [6,7,8,9,10], assignee: "ម៉ែន សំអាត / ខែក គឹមថេង", note: "មុនបើកបវេសនកាល" },
+  { id: 36, title: "តែងតាំងមុខដំណែងជានាយកអនុវិទ្យាល័យ", months: [6,7,8,9,10], assignee: "ម៉ែន សំអាត / ខែក គឹមថេង", note: "មុនបើកបវេសនកាល" },
+  { id: 37, title: "តែងតាំងមុខដំណែងជានាយករងអនុវិទ្យាល័យ", months: [6,7,8,9,10], assignee: "ម៉ែន សំអាត / ខែក គឹមថេង", note: "មុនបើកបវេសនកាល" },
+  { id: 38, title: "បង្គាប់ការបណ្តោះអាសន្នជានាយកវិទ្យាល័យ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "ករណីចាំបាច់បន្ទាន់" },
+  { id: 39, title: "បង្គាប់ការបណ្តោះអាសន្នជានាយករងវិទ្យាល័យ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "ករណីចាំបាច់បន្ទាន់" },
+  { id: 40, title: "បង្គាប់ការបណ្តោះអាសន្នជានាយកអនុវិទ្យាល័យ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "ករណីចាំបាច់បន្ទាន់" },
+  { id: 41, title: "បង្គាប់ការបណ្តោះអាសន្នជានាយករងអនុវិទ្យាល័យ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត", note: "ករណីចាំបាច់បន្ទាន់" },
+  { id: 42, title: "ផ្សព្វផ្សាយលិខិតចូល", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ខែក គឹមថេង", note: "អនុវត្តប្រចាំថ្ងៃ" },
+  { id: 43, title: "ផ្សព្វផ្សាយលិខិតចេញ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ខែក គឹមថេង", note: "អនុវត្តប្រចាំថ្ងៃ" },
+  { id: 44, title: "បេសកកម្មចុះគាំទ្រសាលា និងការិយាល័យ អយក", months: [2,3,5,6,10,11], assignee: "ម៉ែន សំអាត / អ៊ុក សុខឃឿន", note: "តាមផែនការចុះគាំទ្រ" },
+  { id: 45, title: "បេសកកម្មចុះគាំទ្រការិយាល័យ អយក", months: [3,6,9,11], assignee: "ម៉ែន សំអាត", note: "តាមត្រីមាស" },
+  { id: 46, title: "បេសកកម្មបំពេញការងារនៅក្រសួង", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត / គឹម តុងហេង", note: "បញ្ជូនឯកសាររដ្ឋបាល" },
+  { id: 47, title: "បេសកកម្មតាមការអញ្ជើញរបស់ក្រសួង", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ម៉ែន សំអាត / អ៊ុក សុខឃឿន", note: "តាមលិខិតអញ្ជើញ" },
+  { id: 48, title: "ការងារប្រែប្រួលស្ថានភាពរដ្ឋបាល និងគ្រួសារ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ខែក គឹមថេង / អ៊ុក សុខឃឿន", note: "រៀបការ កូន មរណភាព" },
+  { id: 49, title: "ការងារផ្តាច់បៀវត្ស", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ខែក គឹមថេង", note: "មន្ត្រីផ្លាស់ចេញ/និវត្តន៍/ព្យួរ" },
+  { id: 50, title: "ការងារធ្វើប័ណ្ណ ប.ស.ស", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ច័ន្ទ ដាណែ", note: "ជូនមន្ត្រីថ្មី និងប្តូរព័ត៌មាន" },
+  { id: 51, title: "ស្ថិតិបុគ្គលិកបម្រើការងារនៅមន្ទីរ", months: [1,4,7,10], assignee: "គឹម តុងហេង", note: "បូកសរុបតាមត្រីមាស" },
+  { id: 52, title: "ស្ថិតិបុគ្គលិកបម្រើការងារនៅតាមវិទ្យាល័យ", months: [1,4,7,10,11], assignee: "គឹម តុងហេង", note: "ដើមឆ្នាំសិក្សា និងត្រីមាស" },
+  { id: 53, title: "ស្ថិតិបុគ្គលិកបម្រើការងារនៅតាមអនុវិទ្យាល័យ", months: [1,4,7,10,11], assignee: "គឹម តុងហេង", note: "ដើមឆ្នាំសិក្សា និងត្រីមាស" },
+  { id: 54, title: "ស្ថិតិបុគ្គលិកបម្រើការងារនៅតំបន់ជួបការលំបាក", months: [1,2,10,11], assignee: "ឈឹម សុខា", note: "សម្រាប់ប្រាក់ឧបត្ថម្ភតំបន់លំបាក" },
+  { id: 55, title: "ការងារធ្វើបច្ចុប្បន្នភាព ប្រព័ន្ធ HRMIS", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "គឹម តុងហេង / អ៊ុក សុខឃឿន", note: "ធ្វើបច្ចុប្បន្នភាពជាប្រចាំ" },
+  { id: 56, title: "ការងារធ្វើបច្ចុប្បន្នភាព គណនី HRCPD", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "គឹម តុងហេង / អ៊ុក សុខឃឿន", note: "គ្រប់គ្រងគណនី CPD គ្រូ" },
+  { id: 57, title: "ការងារអភិវឌ្ឍវិជ្ជាជីវៈជាប្រចាំ (CPD)", months: [2,3,4,5,6,7,8,9,10], assignee: "គឹម តុងហេង", note: "តាមដានក្រេឌីត CPD" },
+  { id: 58, title: "ការងារវាយតម្លៃក្របខ័ណ្ឌគន្លងអាជីពគ្រូបង្រៀន", months: [4,5,6,7,8], assignee: "គឹម តុងហេង / អ៊ុក សុខឃឿន", note: "វាយតម្លៃតាមលក្ខណវិនិច្ឆ័យ" },
+  { id: 59, title: "ការងារវាយតម្លៃសាលាស្តង់ដាគំរូ", months: [5,6,7,8], assignee: "ម៉ែន សំអាត / គឹម តុងហេង", note: "ចូលរួមគណៈកម្មការវាយតម្លៃ" },
+  { id: 60, title: "ការងារវាយតម្លៃសាលាផ្តល់សេវាសាធារណៈគំរូ", months: [5,6,7,8], assignee: "ម៉ែន សំអាត / អ៊ុក សុខឃឿន", note: "ចូលរួមគណៈកម្មការវាយតម្លៃ" },
+  { id: 61, title: "ការងារវាយតម្លៃសាលាអនុវត្តគម្រោង GEIP", months: [3,6,9,11], assignee: "គឹម តុងហេង", note: "គម្រោងកែលម្អការអប់រំចំណេះទូទៅ" },
+  { id: 62, title: "ការងារចេញវិញ្ញាបនបត្ររដ្ឋបាលបុគ្គលិកអប់រំ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "ហង្ស ដាលី", note: "តាមសំណើសាមីខ្លួន" },
+  { id: 63, title: "ការងារគ្រោងថវិកាជំពូក៦៤ និងពិនិត្យតាមដាន", months: [4,5,6,7], assignee: "អ៊ុក សុខឃឿន", note: "បន្ទុកបុគ្គលិក និងបៀវត្ស" },
+  { id: 64, title: "ការងាររៀបចំ ESP, BSP", months: [4,5,6], assignee: "អ៊ុក សុខឃឿន", note: "ផែនការយុទ្ធសាស្ត្រថវិកា" },
+  { id: 65, title: "ការងាររៀបចំ AOP", months: [8,9,10], assignee: "អ៊ុក សុខឃឿន", note: "ផែនការប្រតិបត្តិប្រចាំឆ្នាំ" },
+  { id: 66, title: "ការងារធ្វើរបាយការណ៍សមិទ្ធកម្ម", months: [3,6,9,12], assignee: "អ៊ុក សុខឃឿន", note: "ប្រចាំត្រីមាសទី១, ២, ៣, ៤" },
+  { id: 67, title: "ការងារសារពើភ័ណ្ឌ", months: [11,12], assignee: "អ៊ុក សុខឃឿន", note: "បញ្ជីសារពើភ័ណ្ឌទ្រព្យសម្បត្តិរដ្ឋ" },
+  { id: 68, title: "ការងារធ្វើរបាយការណ៍ប្រចាំខែ និងប្រចាំឆ្នាំ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "អ៊ុក សុខឃឿន", note: "បូកសរុបរៀងរាល់ចុងខែ" },
+  { id: 69, title: "ការងារគ្រប់គ្រងវត្តមានបុគ្គលិកក្នុងការិយាល័យ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "អ៊ុក សុខឃឿន", note: "ស្រង់វត្តមានប្រចាំថ្ងៃ/ខែ" },
+  { id: 70, title: "ការងារគ្រប់គ្រងវត្តមានបុគ្គលិកក្នុងមន្ទីរ", months: [1,2,3,4,5,6,7,8,9,10,11,12], assignee: "អ៊ុក សុខឃឿន", note: "បូកសរុបវត្តមានមន្ត្រីទូទាំងមន្ទីរ" }
+];
+
+const khmerMonths = ["មករា (ខែ១)","កុម្ភៈ (ខែ២)","មីនា (ខែ៣)","មេសា (ខែ៤)","ឧសភា (ខែ៥)","មិថុនា (ខែ៦)","កក្កដា (ខែ៧)","សីហា (ខែ៨)","កញ្ញា (ខែ៩)","តុលា (ខែ១០)","វិច្ឆិកា (ខែ១១)","ធ្នូ (ខែ១២)"];
+const khmerMonthsShort = ["មករា","កុម្ភៈ","មីនា","មេសា","ឧសភា","មិថុនា","កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
+
+// =====================================================================
+// 1b. ការកំណត់ CLOUD
+// =====================================================================
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBbksLicq5saEpk9oWZKhfnqE2GeAAo_Dk",
+  authDomain: "pusart-hr-office.firebaseapp.com",
+  projectId: "pusart-hr-office",
+  storageBucket: "pusart-hr-office.firebasestorage.app",
+  messagingSenderId: "1015760720002",
+  appId: "1:1015760720002:web:0352e7352caab53229649b"
+};
+const ADMIN_EMAILS = ['sokhoeurnouk@gmail.com'];
+
+// =====================================================================
+// 2. HELPERS
+// =====================================================================
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, '0');
+const localISO = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+function addDays(iso, n) { const [y, m, d] = iso.split('-').map(Number); return localISO(new Date(y, m - 1, d + n)); }
+function esc(v) { return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function toKhmerNum(num) { const k = ['០','១','២','៣','៤','៥','៦','៧','៨','៩']; return String(num).replace(/\d/g, d => k[d]); }
+function formatKhmerDate(iso) { if (!iso) return ''; const p = iso.split('-'); return p.length === 3 ? `${toKhmerNum(p[2])}/${toKhmerNum(p[1])}/${toKhmerNum(p[0])}` : iso; }
+function longKhmerDate(d = new Date()) { return `ពោធិ៍សាត់, ថ្ងៃទី${toKhmerNum(d.getDate())} ខែ${khmerMonthsShort[d.getMonth()]} ឆ្នាំ${toKhmerNum(d.getFullYear())}`; }
+function yearsOfService(str) {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(str || ''); if (!m) return null;
+  const now = new Date(); let y = now.getFullYear() - +m[3];
+  if (now.getMonth() + 1 < +m[2] || (now.getMonth() + 1 === +m[2] && now.getDate() < +m[1])) y--;
+  return y >= 0 ? y : null;
+}
+function getStatusBadge(s) {
+  if (s === 'completed') return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><i class="fa-solid fa-check-circle"></i> សម្រេច</span>`;
+  if (s === 'in-progress') return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200"><i class="fa-solid fa-spinner"></i> កំពុងធ្វើ</span>`;
+  return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200"><i class="fa-solid fa-clock"></i> រង់ចាំ</span>`;
+}
+function statusText(s) { return s === 'completed' ? 'សម្រេច ១០០%' : s === 'in-progress' ? 'កំពុងអនុវត្ត' : 'រង់ចាំ'; }
+let toastTimer;
+function showToast(msg, isError = false) {
+  $('toast-msg').textContent = msg;
+  $('toast-icon').className = isError ? 'fa-solid fa-circle-exclamation text-red-400 text-lg' : 'fa-solid fa-circle-check text-emerald-400 text-lg';
+  $('toast').classList.remove('translate-y-20', 'opacity-0');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.add('translate-y-20', 'opacity-0'), 3200);
+}
+function setOptions(id, html, fallback) {
+  const el = $(id); if (!el) return;
+  const prev = el.value; el.innerHTML = html;
+  if (prev && [...el.options].some(o => o.value === prev)) el.value = prev; else if (fallback !== undefined) el.value = fallback;
+}
+function downloadFile(name, text, mime) {
+  const blob = new Blob([text], { type: mime });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function toCSV(rows) { return '\ufeff' + rows.map(r => r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n'); }
+
+// =====================================================================
+// 3. STATE + LOCAL PERSISTENCE
+// =====================================================================
+const STORAGE_KEY = 'pursat-hr-office-v3';
+let frameworkTasks = JSON.parse(JSON.stringify(frameworkTasksData));
+const TASKS_KEY = 'pursat-hr-framework-tasks-v1';
+function saveLocalTasks() {
+  try { localStorage.setItem(TASKS_KEY, JSON.stringify(frameworkTasks)); } catch (e) { console.warn('localStorage unavailable', e); }
+}
+function loadLocalTasks() {
+  if (FIREBASE_CONFIG) return;
+  try {
+    const raw = localStorage.getItem(TASKS_KEY); if (!raw) return;
+    const d = JSON.parse(raw);
+    if (Array.isArray(d) && d.length) frameworkTasks = d;
+  } catch (e) { console.warn('loadLocalTasks failed', e); }
+}
+let staffList = JSON.parse(JSON.stringify(defaultStaffData));
+let workLogs = [];
+let attendance = [];
+let documentsList = [];
+let attDirty = false;
+let editingAttachments = [], removedAttachments = [];
+const todayStr = localISO();
+const nowDate = new Date();
+const currentMonthNum = nowDate.getMonth() + 1;
+const currentYear = nowDate.getFullYear();
+const currentYM = todayStr.slice(0, 7);
+
+function saveLocal() {
+  if (FIREBASE_CONFIG) return;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: 3, staff: staffList, logs: workLogs, attendance, documents: documentsList })); } catch (e) { console.warn('localStorage unavailable', e); }
+}
+function loadLocal() {
+  if (FIREBASE_CONFIG) return;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('pursat-hr-office-v2'); if (!raw) return;
+    const d = JSON.parse(raw);
+    if (Array.isArray(d.staff) && d.staff.length) staffList = d.staff;
+    if (Array.isArray(d.logs)) workLogs = d.logs;
+    if (Array.isArray(d.attendance)) attendance = d.attendance;
+    if (Array.isArray(d.documents)) documentsList = d.documents;
+  } catch (e) { console.warn('loadLocal failed', e); }
+}
+function migrateLogs() {
+  workLogs.forEach(l => { if (!l.staffId) { const s = staffList.find(x => x.name === l.staffName); if (s) l.staffId = s.id; } });
+}
+const staffById = id => staffList.find(s => s.id === id);
+const staffByName = n => staffList.find(s => s.name === n);
+const logStaffId = l => l.staffId || (staffByName(l.staffName) || {}).id || '';
+const logStaffName = l => (staffById(l.staffId) || {}).name || l.staffName || '-';
+const tasksForStaff = s => frameworkTasks.filter(t => t.assignee.includes(s.name));
+const taskLogCount = (taskId, ym) => workLogs.filter(l => String(l.taskId) === String(taskId) && l.date.startsWith(ym)).length;
+const sortLogsDesc = arr => [...arr].sort((a, b) => b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id)));
+
+// =====================================================================
+// 4. CLOUD SYNC
+// =====================================================================
+const platformCfg = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+const cloud = {
+  ready: false, db: null, fs: null, auth: null, authM: null, user: null, unsubs: [],
+  own: !!FIREBASE_CONFIG,
+  appId: typeof __app_id !== 'undefined' ? __app_id : 'pursat-moeys-hr-app'
+};
+const colPath = c => cloud.own ? [c] : ['artifacts', cloud.appId, 'public', 'data', c];
+const isAdmin = () => !cloud.own || !!(cloud.user && ADMIN_EMAILS.includes((cloud.user.email || '').toLowerCase()));
+const mineStaff = () => cloud.user ? staffList.find(s => (s.email || '').toLowerCase() === (cloud.user.email || '').toLowerCase()) : null;
+const canEditLog = l => isAdmin() || !!(cloud.user && l.createdBy === cloud.user.uid);
+const canEditDoc = d => isAdmin() || !!(cloud.user && d.createdBy === cloud.user.uid) || !!(mineStaff() && (d.assigneeId === mineStaff().id || mineStaff().name === 'ខែក គឹមថេង'));
+
+function setBadge(state, text) {
+  const b = $('cloud-status-badge'); if (!b) return;
+  const map = {
+    connected: ['bg-emerald-500/20 text-emerald-200 border-emerald-400/40', 'fa-cloud-arrow-up'],
+    local: ['bg-sky-500/20 text-sky-200 border-sky-400/40', 'fa-hard-drive'],
+    error: ['bg-red-500/20 text-red-200 border-red-400/40', 'fa-triangle-exclamation']
+  };
+  const [cls, icon] = map[state] || ['bg-amber-500/20 text-amber-200 border-amber-400/30', 'fa-rotate fa-spin'];
+  b.className = `inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${cls}`;
+  b.innerHTML = `<i class="fa-solid ${icon}"></i> ${esc(text)}`;
+}
+function showLogin(show) { const o = $('login-overlay'); if (o) o.classList.toggle('hidden', !show); }
+function updateUserBadge() {
+  const el = $('user-badge'); if (!el) return;
+  const show = cloud.own && !!cloud.user;
+  el.classList.toggle('hidden', !show); el.classList.toggle('inline-flex', show);
+  if (show) {
+    const me = mineStaff();
+    $('user-badge-text').textContent = `${me ? me.name : cloud.user.email} • ${isAdmin() ? 'អ្នកគ្រប់គ្រង' : 'មន្ត្រី'}`;
+  }
+}
+async function cloudSet(col, id, obj) {
+  if (!cloud.ready) return;
+  const { doc, setDoc } = cloud.fs;
+  await setDoc(doc(cloud.db, ...colPath(col), String(id)), obj);
+}
+async function cloudDel(col, id) {
+  if (!cloud.ready) return;
+  const { doc, deleteDoc } = cloud.fs;
+  await deleteDoc(doc(cloud.db, ...colPath(col), String(id)));
+}
+function stopListeners() { cloud.unsubs.forEach(f => { try { f(); } catch (e) {} }); cloud.unsubs = []; }
+function startListeners() {
+  const fsM = cloud.fs; stopListeners();
+  const colRef = c => fsM.collection(cloud.db, ...colPath(c));
+  const seed = async (col, items) => {
+    const batch = fsM.writeBatch(cloud.db);
+    items.forEach(it => batch.set(fsM.doc(cloud.db, ...colPath(col), String(it.id)), it));
+    await batch.commit();
+  };
+  const onErr = err => {
+    console.error(err);
+    if (err && err.code === 'permission-denied') { setBadge('error', 'គ្មានសិទ្ធិចូលទិន្នន័យ — ពិនិត្យ Rules'); showToast('គ្មានសិទ្ធិអានទិន្នន័យ។ ពិនិត្យ Firestore Rules', true); }
+    else setBadge('error', 'មិនអាចទាញទិន្នន័យ Cloud');
+  };
+  let seededStaff = false, seededLogs = false;
+  cloud.unsubs.push(fsM.onSnapshot(colRef('staff'), async snap => {
+    if (snap.empty) {
+      if (!seededStaff && isAdmin()) { seededStaff = true; try { await seed('staff', cloud.own ? defaultStaffData : staffList); } catch (e) { onErr(e); } }
+      return;
+    }
+    staffList = snap.docs.map(d => d.data()).sort((a, b) => (a.no || 99) - (b.no || 99));
+    migrateLogs(); saveLocal(); refreshAll();
+  }, onErr));
+  cloud.unsubs.push(fsM.onSnapshot(colRef('workLogs'), async snap => {
+    if (snap.empty) {
+      if (!cloud.own && !seededLogs && workLogs.length) { seededLogs = true; try { await seed('workLogs', workLogs); } catch (e) { onErr(e); } return; }
+      workLogs = []; refreshAll(); return;
+    }
+    workLogs = snap.docs.map(d => d.data()); migrateLogs(); saveLocal(); refreshAll();
+  }, onErr));
+  cloud.unsubs.push(fsM.onSnapshot(colRef('attendance'), snap => { attendance = snap.docs.map(d => d.data()); saveLocal(); refreshAll(); }, err => console.warn('attendance listener error', err)));
+  cloud.unsubs.push(fsM.onSnapshot(colRef('documents'), snap => { documentsList = snap.docs.map(d => d.data()); saveLocal(); refreshAll(); }, err => console.warn('documents listener error', err)));
+  let seededTasks = false;
+  cloud.unsubs.push(fsM.onSnapshot(colRef('frameworkTasks'), async snap => {
+    if (snap.empty) {
+      if (!seededTasks && isAdmin()) { seededTasks = true; try { await seed('frameworkTasks', frameworkTasksData); } catch (e) { console.warn('seed frameworkTasks failed', e); } }
+      return;
+    }
+    frameworkTasks = snap.docs.map(d => d.data()).sort((a, b) => a.id - b.id); refreshAll();
+  }, err => console.warn('frameworkTasks listener error', err)));
+}
+window.doLogin = async function (e) {
+  e.preventDefault();
+  const err = $('login-error'), btn = $('login-btn');
+  err.textContent = ''; btn.disabled = true;
+  try {
+    await cloud.authM.signInWithEmailAndPassword(cloud.auth, $('login-email').value.trim(), $('login-password').value);
+    $('login-password').value = '';
+  } catch (ex) {
+    const c = ex && ex.code || '';
+    err.textContent = /invalid-credential|wrong-password|user-not-found|invalid-email/.test(c) ? 'អ៊ីមែល ឬលេខសម្ងាត់មិនត្រឹមត្រូវ'
+      : /too-many-requests/.test(c) ? 'ព្យាយាមច្រើនពេក សូមរង់ចាំបន្តិចរួចសាកល្បងម្តងទៀត'
+      : /network/.test(c) ? 'មិនអាចភ្ជាប់អ៊ីនធឺណិត' : 'ចូលមិនបាន៖ ' + c;
+  } finally { btn.disabled = false; }
+};
+window.doLogout = function () { if (cloud.authM && cloud.auth) cloud.authM.signOut(cloud.auth); };
+
+async function initCloudSync() {
+  const cfg = FIREBASE_CONFIG || platformCfg;
+  if (!cfg) { setBadge('local', 'រក្សាទុកក្នុងកុំព្យូទ័រនេះ (Local)'); return; }
+  try {
+    const V = '11.6.1';
+    const [appM, authM, fsM] = await Promise.all([
+      import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`),
+      import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`),
+      import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`)
+    ]);
+    const app = appM.initializeApp(cfg);
+    cloud.authM = authM; cloud.auth = authM.getAuth(app); cloud.fs = fsM; cloud.db = fsM.getFirestore(app);
+    try { if (!USE_STORAGE) throw new Error('storage disabled'); const stM = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-storage.js`); cloud.stM = stM; cloud.storage = stM.getStorage(app); } catch (e) { console.warn('Storage unavailable', e); }
+
+    if (cloud.own) {
+      setBadge('connecting', 'សូមចូលគណនី');
+      authM.onAuthStateChanged(cloud.auth, user => {
+        cloud.user = user || null;
+        if (user) {
+          cloud.ready = true; showLogin(false);
+          setBadge('connected', 'ភ្ជាប់ប្រព័ន្ធរួមគ្នា (Cloud Sync)');
+          startListeners();
+        } else {
+          cloud.ready = false; stopListeners(); staffList = []; workLogs = []; attendance = []; documentsList = [];
+          showLogin(true); setBadge('connecting', 'សូមចូលគណនី'); refreshAll();
+        }
+        updateUserBadge();
+      });
+    } else {
+      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await authM.signInWithCustomToken(cloud.auth, __initial_auth_token);
+      else await authM.signInAnonymously(cloud.auth);
+      cloud.user = cloud.auth.currentUser; cloud.ready = true;
+      setBadge('connected', 'ភ្ជាប់ប្រព័ន្ធរួមគ្នា (Cloud Sync)');
+      startListeners();
+    }
+  } catch (err) {
+    console.error('Cloud init error:', err);
+    cloud.ready = false;
+    if (cloud.own) { setBadge('error', 'មិនអាចភ្ជាប់ Firebase — ពិនិត្យ config'); $('login-error').textContent = 'មិនអាចភ្ជាប់ Firebase។ ពិនិត្យ firebaseConfig និងអ៊ីនធឺណិត។'; }
+    else setBadge('error', 'មិនអាចភ្ជាប់ Cloud — ប្រើ Local');
+  }
+}
+
+// =====================================================================
+// 5. INIT + NAVIGATION
+// =====================================================================
+function applyPermissions() {
+  const adm = isAdmin();
+  ['btn-add-staff', 'backup-box', 'btn-add-task'].forEach(id => { const el = $(id); if (el) el.classList.toggle('hidden', !adm); });
+  updateUserBadge();
+}
+function refreshAll() { applyPermissions(); populateDropdowns(); updateDashboard(); renderStaffList(); renderFrameworkTable(); renderLogTable(); renderDocsTable(); renderAttendance(); generateReport(); }
+
+function initApp() {
+  if (FIREBASE_CONFIG) { staffList = []; workLogs = []; attendance = []; documentsList = []; showLogin(true); }
+  loadLocal(); loadLocalTasks(); migrateLogs();
+  $('att-date').value = todayStr; $('att-month').value = currentYM; $('log-date').value = todayStr; $('report-date').value = todayStr; $('report-week-start').value = todayStr; $('report-month').value = currentYM;
+  $('doc-date').value = todayStr; $('doc-reg-date').value = todayStr;
+  refreshAll();
+  resetDocForm();
+  initCloudSync();
+  setTimeout(autoBackupData, 5000);
+}
+window.switchTab = function (tab) {
+  document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+  $(`view-${tab}`).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('bg-white', 'text-blue-900', 'shadow-sm'); b.classList.add('text-blue-100', 'hover:bg-white/10'); });
+  const active = $(`tab-${tab}`); active.classList.remove('text-blue-100', 'hover:bg-white/10'); active.classList.add('bg-white', 'text-blue-900', 'shadow-sm');
+  if (tab === 'dashboard') updateDashboard();
+  if (tab === 'docs') { renderDocsTable(); if (!$('doc-id').value) $('doc-reg-no').value = suggestNextDocNo($('doc-direction').value); }
+  if (tab === 'reports') generateReport();
+  if (tab === 'attendance') renderAttendance();
+  window.scrollTo({ top: 0 });
+};
+
+function populateDropdowns() {
+  setOptions('dashboard-month-select', khmerMonths.map((m, i) => `<option value="${i + 1}">${m}</option>`).join(''), String(currentMonthNum));
+  const byId = staffList.map(s => `<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.role)})</option>`).join('');
+  const byName = staffList.map(s => `<option value="${esc(s.name)}">${esc(s.name)} (${esc(s.role)})</option>`).join('');
+  const logList = isAdmin() ? staffList : (mineStaff() ? [mineStaff()] : []);
+  setOptions('log-staff', logList.map(s => `<option value="${esc(s.id)}">${esc(s.name)} (${esc(s.role)})</option>`).join(''));
+  const defaultDocAssignee = (staffList.find(s => s.name === 'ខែក គឹមថេង') || staffList[0] || {}).id || '';
+  setOptions('doc-assignee', `<option value="">-- មិនទាន់កំណត់ --</option>` + byId, defaultDocAssignee);
+  setOptions('framework-staff-filter', `<option value="all">មន្ត្រីទទួលបន្ទុកទាំងអស់</option>` + byName, 'all');
+  setOptions('log-filter-staff', `<option value="all">មន្ត្រីទាំងអស់</option>` + byId, 'all');
+  setOptions('report-staff', `<option value="all">បូកសរុបរួមទាំងការិយាល័យ</option>` + byId, 'all');
+  const years = new Set([currentYear, currentYear - 1]);
+  workLogs.forEach(l => { const y = parseInt(l.date); if (y) years.add(y); });
+  documentsList.forEach(d => { const y = parseInt(d.regDate); if (y) years.add(y); });
+  setOptions('report-year', [...years].sort((a, b) => b - a).map(y => `<option value="${y}">${toKhmerNum(y)}</option>`).join(''), String(currentYear));
+  populateFrameworkTaskDropdown($('log-staff').value);
+}
+function populateFrameworkTaskDropdown(staffId) {
+  const sel = $('log-framework-task'); if (!sel) return;
+  const prev = sel.value;
+  const s = staffById(staffId);
+  let list = frameworkTasks;
+  if (s) { const m = tasksForStaff(s); if (m.length) list = m; }
+  sel.innerHTML = `<option value="">-- ជ្រើសរើសមុខងារ ឬវាយបញ្ចូលខាងក្រោម --</option>` + list.map(t => `<option value="${t.id}">${t.id}. ${esc(t.title)}</option>`).join('');
+  if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+}
+
+// =====================================================================
+// 6. DASHBOARD
+// =====================================================================
+function updateDashboard() {
+  $('kpi-total-staff').textContent = `${staffList.length} នាក់`;
+  const monthTasks = frameworkTasks.filter(t => t.months.includes(currentMonthNum));
+  const covered = monthTasks.filter(t => taskLogCount(t.id, currentYM) > 0).length;
+  $('kpi-month-tasks').textContent = `${monthTasks.length} មុខ`;
+  $('kpi-month-logs').textContent = workLogs.filter(l => l.date.startsWith(currentYM)).length;
+  $('kpi-coverage').textContent = monthTasks.length ? Math.round(covered / monthTasks.length * 100) + '%' : '0%';
+  const docsThisMonth = documentsList.filter(d => (d.regDate || '').startsWith(currentYM));
+  const inM = docsThisMonth.filter(d => d.direction === 'incoming').length;
+  const outM = docsThisMonth.filter(d => d.direction === 'outgoing').length;
+  $('kpi-docs-month').textContent = `${toKhmerNum(inM)} / ${toKhmerNum(outM)}`;
+  const pendingWork = workLogs.filter(l => l.status !== 'completed').length;
+  const pendingDocs = documentsList.filter(d => d.status !== 'completed').length;
+  $('kpi-pending-logs').textContent = `${pendingWork + pendingDocs}`;
+  renderDashboardMonthTasks(); renderDashboardRecentLogs();
+}
+window.renderDashboardMonthTasks = function () {
+  const m = parseInt($('dashboard-month-select').value) || currentMonthNum;
+  const ym = `${currentYear}-${pad(m)}`;
+  const tasks = frameworkTasks.filter(t => t.months.includes(m));
+  const covered = tasks.filter(t => taskLogCount(t.id, ym) > 0).length;
+  const pct = tasks.length ? Math.round(covered / tasks.length * 100) : 0;
+  $('dash-progress-text').textContent = `បានកត់ត្រា ${covered}/${tasks.length} មុខ (ឆ្នាំ${toKhmerNum(currentYear)})`;
+  $('dash-progress-pct').textContent = pct + '%';
+  $('dash-progress-bar').style.width = pct + '%';
+
+  $('dashboard-month-list').innerHTML = tasks.length ? tasks.map(t => {
+    const n = taskLogCount(t.id, ym);
+    return `<div class="p-3 rounded-xl ${n ? 'bg-emerald-50/50 border-emerald-200' : 'bg-slate-50 border-slate-200/70'} hover:bg-blue-50/60 border transition flex items-start justify-between gap-2">
+      <div class="min-w-0">
+        <div class="flex items-start gap-1.5"><span class="bg-blue-900 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0">#${t.id}</span><h4 class="text-xs font-bold text-slate-800">${esc(t.title)}</h4></div>
+        <p class="text-[11px] text-slate-500 mt-1"><i class="fa-solid fa-user-check text-blue-600 mr-1"></i>${esc(t.assignee)}</p>
+        ${t.note ? `<p class="text-[10px] text-amber-700 mt-0.5"><i class="fa-solid fa-circle-info mr-1"></i>${esc(t.note)}</p>` : ''}
+        <p class="text-[10px] mt-1 font-semibold ${n ? 'text-emerald-700' : 'text-slate-400'}">${n ? `<i class="fa-solid fa-check"></i> មានកំណត់ត្រា ${n}` : 'មិនទាន់មានកំណត់ត្រា'}</p>
+      </div>
+      <button data-act="quickLog" data-id="${t.id}" class="shrink-0 bg-white hover:bg-blue-600 hover:text-white text-blue-600 border border-blue-200 text-[11px] font-medium px-2.5 py-1 rounded-lg transition">កត់ត្រា</button>
+    </div>`;
+  }).join('') : `<p class="text-xs text-slate-400 text-center py-6">មិនមានទិន្នន័យការងារសម្រាប់ខែនេះទេ</p>`;
+
+  $('dashboard-workload').innerHTML = staffList.map(s => {
+    const mine = tasksForStaff(s).filter(t => t.months.includes(m));
+    const logs = workLogs.filter(l => logStaffId(l) === s.id && l.date.startsWith(ym));
+    const done = logs.filter(l => l.status === 'completed').length;
+    return `<tr class="hover:bg-slate-50"><td class="py-2 px-3 font-semibold text-blue-900">${esc(s.name)}</td><td class="py-2 px-3 text-center">${mine.length}</td><td class="py-2 px-3 text-center">${logs.length}</td><td class="py-2 px-3 text-center text-emerald-700 font-semibold">${done}</td></tr>`;
+  }).join('') || `<tr><td colspan="4" class="py-4 text-center text-slate-400">មិនមានមន្ត្រី</td></tr>`;
+};
+function renderDashboardRecentLogs() {
+  const recent = sortLogsDesc(workLogs).slice(0, 8);
+  $('dashboard-recent-logs').innerHTML = recent.length ? recent.map(l => `
+    <tr class="hover:bg-slate-50/80">
+      <td class="py-3 px-3 font-medium text-slate-600 whitespace-nowrap">${formatKhmerDate(l.date)}</td>
+      <td class="py-3 px-3 font-bold text-blue-900 whitespace-nowrap">${esc(logStaffName(l))}</td>
+      <td class="py-3 px-3 text-slate-700">${esc(l.description)}</td>
+      <td class="py-3 px-3 font-semibold text-slate-700 whitespace-nowrap">${esc(l.quantity)} ${esc(l.unit)}</td>
+      <td class="py-3 px-3 text-center whitespace-nowrap">${getStatusBadge(l.status)}</td>
+    </tr>`).join('') : `<tr><td colspan="5" class="text-center py-8 text-xs text-slate-400">មិនទាន់មានកំណត់ត្រាការងារនៅឡើយទេ — ចុច «កត់ត្រាការងារថ្ងៃនេះ» ដើម្បីចាប់ផ្តើម</td></tr>`;
+}
+
+// =====================================================================
+// 7. STAFF
+// =====================================================================
+window.renderStaffList = function () {
+  const q = ($('staff-search').value || '').toLowerCase().trim();
+  $('staff-count').textContent = toKhmerNum(staffList.length);
+  const list = staffList.filter(s => !q || [s.name, s.id, s.role, ...(s.duties || [])].some(x => String(x).toLowerCase().includes(q)));
+  $('staff-grid').innerHTML = list.length ? list.map(s => {
+    const idx = staffList.indexOf(s);
+    const head = s.role === 'ប្រធានការិយាល័យ';
+    const badge = head ? 'bg-amber-100 text-amber-800 border-amber-300' : s.role.includes('អនុប្រធាន') ? 'bg-blue-100 text-blue-800 border-blue-300' : 'bg-slate-100 text-slate-700 border-slate-200';
+    const count = workLogs.filter(l => logStaffId(l) === s.id).length;
+    const yrs = yearsOfService(s.startDate);
+    const taskN = tasksForStaff(s).length;
+    return `<div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 hover:border-blue-300 transition flex flex-col justify-between">
+      <div>
+        <div class="flex items-start justify-between gap-3 border-b border-slate-100 pb-3.5">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl ${s.gender === 'ស' ? 'bg-pink-50 text-pink-600 border-pink-200' : 'bg-blue-50 text-blue-700 border-blue-200'} border flex items-center justify-center font-bold text-base">${toKhmerNum(idx + 1)}</div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2"><h3 class="font-bold text-slate-900 text-base">${esc(s.name)}</h3><span class="text-[11px] px-2 py-0.5 rounded-full border font-semibold ${badge}">${esc(s.role)}</span></div>
+              <p class="text-xs text-slate-500 mt-0.5">អត្តលេខ៖ <span class="font-mono font-semibold text-slate-700">${esc(s.id)}</span> • ភេទ៖ ${s.gender === 'ស' ? 'ស្រី' : 'ប្រុស'}</p>
+            </div>
+          </div>
+          <div class="flex gap-0.5 shrink-0 ${isAdmin() ? '' : 'hidden'}">
+            <button data-act="editStaff" data-id="${esc(s.id)}" class="text-slate-400 hover:text-blue-600 p-1.5 rounded-lg hover:bg-blue-50" title="កែប្រែ"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button data-act="deleteStaff" data-id="${esc(s.id)}" class="text-slate-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50" title="លុប"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 my-3 bg-slate-50 p-2.5 rounded-xl text-[11px]">
+          <div><span class="text-slate-400 block">ក្របខ័ណ្ឌ៖</span><span class="font-semibold text-slate-700">${esc(s.framework)}</span></div>
+          <div><span class="text-slate-400 block">កាំប្រាក់ (ថ្ងៃឡើងកាំ)៖</span><span class="font-semibold text-slate-700">${esc(s.rank)} (${esc(s.lastRankDate || '-')})</span></div>
+          <div><span class="text-slate-400 block">កម្រិតវប្បធម៌៖</span><span class="font-semibold text-slate-700">${esc(s.education)}</span></div>
+          <div><span class="text-slate-400 block">ថ្ងៃចូលបម្រើការងារ៖</span><span class="font-semibold text-slate-700">${esc(s.startDate || '-')}</span></div>
+          <div><span class="text-slate-400 block">អាយុការងារ៖</span><span class="font-semibold text-slate-700">${yrs === null ? '-' : toKhmerNum(yrs) + ' ឆ្នាំ'}</span></div>
+          <div><span class="text-slate-400 block">មុខងារក្នុងក្របខ័ណ្ឌ ៧០៖</span><span class="font-semibold text-slate-700">${toKhmerNum(taskN)} មុខ</span></div>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-briefcase text-blue-600"></i> ភារកិច្ចស្នូលទទួលបន្ទុក៖</h4>
+          <ul class="space-y-1 text-xs text-slate-600 list-disc list-inside">${(s.duties || []).map(d => `<li class="leading-relaxed">${esc(d)}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+        <span class="text-slate-500">កំណត់ត្រាការងារ៖ <strong class="text-blue-700">${count}</strong> សកម្មភាព</span>
+        <button data-act="logStaff" data-id="${esc(s.id)}" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"><i class="fa-solid fa-plus-circle"></i> កត់ត្រាការងារ</button>
+      </div>
+    </div>`;
+  }).join('') : `<p class="col-span-full text-center text-sm text-slate-400 py-10">រកមិនឃើញមន្ត្រីត្រូវនឹងការស្វែងរកទេ</p>`;
+};
+window.openAddStaffModal = function () {
+  $('staff-modal-title').textContent = 'បន្ថែមមន្ត្រីថ្មីក្នុងការិយាល័យ';
+  $('staff-form').reset(); $('edit-staff-id').value = '';
+  $('staff-modal').classList.remove('hidden');
+};
+function openEditStaffModal(id) {
+  const s = staffById(id); if (!s) return;
+  $('staff-modal-title').textContent = `កែប្រែព័ត៌មាន៖ ${s.name}`;
+  $('edit-staff-id').value = s.id;
+  $('st-id').value = s.id; $('st-email').value = s.email || ''; $('st-name').value = s.name; $('st-gender').value = s.gender; $('st-role').value = s.role;
+  $('st-framework').value = s.framework || ''; $('st-rank').value = s.rank || ''; $('st-start-date').value = s.startDate || '';
+  $('st-last-rank').value = s.lastRankDate || ''; $('st-edu').value = s.education || ''; $('st-duties').value = (s.duties || []).join('\n');
+  $('staff-modal').classList.remove('hidden');
+}
+window.closeStaffModal = function () { $('staff-modal').classList.add('hidden'); };
+window.saveStaff = async function (e) {
+  e.preventDefault();
+  const oldId = $('edit-staff-id').value;
+  const newId = $('st-id').value.trim();
+  if (staffList.some(s => s.id === newId && s.id !== oldId)) { showToast('អត្តលេខនេះមានរួចហើយ!', true); return; }
+  const old = oldId ? staffById(oldId) : null;
+  const obj = {
+    ...(old || {}),
+    no: old ? old.no : Math.max(0, ...staffList.map(s => s.no || 0)) + 1,
+    id: newId, name: $('st-name').value.trim(), email: $('st-email').value.trim().toLowerCase(), gender: $('st-gender').value, role: $('st-role').value.trim(),
+    framework: $('st-framework').value.trim() || 'គ្រូបង្រៀន', rank: $('st-rank').value.trim() || '-',
+    startDate: $('st-start-date').value.trim() || '-', lastRankDate: $('st-last-rank').value.trim() || '-',
+    education: $('st-edu').value.trim() || '-',
+    duties: $('st-duties').value.split('\n').map(x => x.trim()).filter(Boolean)
+  };
+  if (old) {
+    const i = staffList.indexOf(old); staffList[i] = obj;
+    workLogs.forEach(l => { if (logStaffId(l) === oldId) { l.staffId = newId; l.staffName = obj.name; } });
+  } else staffList.push(obj);
+  saveLocal(); autoBackupData(); closeStaffModal(); refreshAll();
+  try {
+    if (old && oldId !== newId) await cloudDel('staff', oldId);
+    await cloudSet('staff', newId, obj);
+    if (old) for (const l of workLogs.filter(x => x.staffId === newId)) await cloudSet('workLogs', l.id, l);
+    showToast('បានរក្សាទុកព័ត៌មានមន្ត្រីជោគជ័យ!');
+  } catch (err) { console.error(err); showToast('រក្សាទុកក្នុងម៉ាស៊ីនបាន ប៉ុន្តែមិនទាន់ Sync ទៅ Cloud', true); }
+};
+async function deleteStaff(id) {
+  const s = staffById(id); if (!s) return;
+  const n = workLogs.filter(l => logStaffId(l) === id).length;
+  if (!confirm(`លុបមន្ត្រី «${s.name}» ?${n ? `\nកំណត់ត្រាការងារ ${n} របស់គាត់នឹងនៅរក្សាទុក (បង្ហាញតាមឈ្មោះ)។` : ''}`)) return;
+  workLogs.forEach(l => { if (logStaffId(l) === id) { l.staffName = s.name; l.staffId = id; } });
+  staffList = staffList.filter(x => x.id !== id);
+  saveLocal(); refreshAll();
+  try { await cloudDel('staff', id); showToast('បានលុបមន្ត្រី'); } catch (e) { showToast('លុបលើ Cloud មិនបាន', true); }
+}
+
+// =====================================================================
+// 8. FRAMEWORK TABLE
+// =====================================================================
+window.renderFrameworkTable = function () {
+  const mf = $('framework-month-filter').value, sf = $('framework-staff-filter').value;
+  const q = $('framework-search').value.toLowerCase().trim();
+  const list = frameworkTasks.filter(t =>
+    (mf === 'all' || t.months.includes(+mf)) &&
+    (sf === 'all' || t.assignee.includes(sf)) &&
+    (!q || t.title.toLowerCase().includes(q) || t.assignee.toLowerCase().includes(q) || String(t.id) === q));
+  $('fw-result-count').textContent = `— បង្ហាញ ${list.length}/${frameworkTasks.length} មុខ`;
+  $('framework-tbody').innerHTML = list.length ? list.map(t => {
+    let cells = '';
+    for (let m = 1; m <= 12; m++) {
+      cells += `<td class="py-2 px-1 text-center border-r border-slate-200 ${m === currentMonthNum ? 'bg-amber-50/60' : ''}">${t.months.includes(m) ? `<span class="inline-flex items-center justify-center w-5 h-5 rounded bg-blue-600 text-white text-[10px]"><i class="fa-solid fa-check"></i></span>` : `<span class="text-slate-200">-</span>`}</td>`;
+    }
+    return `<tr class="hover:bg-blue-50/40 transition">
+      <td class="py-2.5 px-3 text-center font-bold text-slate-600 border-r border-slate-200">${t.id}</td>
+      <td class="py-2.5 px-3 font-medium text-slate-800 border-r border-slate-200"><div class="flex items-start justify-between gap-2"><span>${esc(t.title)}</span>${isAdmin() ? `<span class="no-print shrink-0 flex gap-0.5"><button data-act="editTask" data-id="${t.id}" class="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded-lg" title="កែបរិយាយការងារ"><i class="fa-solid fa-pen"></i></button><button data-act="deleteTask" data-id="${t.id}" class="text-slate-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg" title="លុបការងារ"><i class="fa-solid fa-trash"></i></button></span>` : ''}</div></td>${cells}
+      <td class="py-2.5 px-3 font-semibold text-blue-900 border-r border-slate-200"><div class="flex items-center justify-between gap-2"><span>${esc(t.assignee || '-')}</span>${isAdmin() ? `<button data-act="editAssignee" data-id="${t.id}" class="no-print shrink-0 text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded-lg" title="ប្តូរ/បន្ថែមមន្ត្រីទទួលបន្ទុក"><i class="fa-solid fa-user-pen"></i></button>` : ''}</div></td>
+      <td class="py-2.5 px-3 text-slate-500 border-r border-slate-200">${esc(t.note || '-')}</td>
+      <td class="py-2.5 px-2 text-center"><button data-act="quickLog" data-id="${t.id}" class="bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 px-2.5 py-1 rounded-lg font-medium transition">កត់ត្រា</button></td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="17" class="text-center py-8 text-slate-400">មិនមានមុខងារត្រូវនឹងការស្វែងរកទេ</td></tr>`;
+};
+
+function openAssigneeModal(taskId) {
+  if (!isAdmin()) return;
+  const t = frameworkTasks.find(x => x.id === +taskId); if (!t) return;
+  const current = String(t.assignee || '');
+  const known = staffList.map(s => s.name);
+  const extra = current.split('/').map(x => x.trim()).filter(x => x && !known.includes(x));
+  $('as-task-id').value = t.id;
+  $('as-task-title').textContent = `${t.id}. ${t.title}`;
+  $('as-staff-list').innerHTML = staffList.length ? staffList.map(s => `
+    <label class="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:bg-blue-50 cursor-pointer text-xs">
+      <input type="checkbox" class="as-check w-4 h-4 accent-blue-600" value="${esc(s.name)}" ${current.includes(s.name) ? 'checked' : ''}>
+      <span class="font-semibold text-slate-800">${esc(s.name)}</span><span class="text-slate-400">${esc(s.role || '')}</span>
+    </label>`).join('') : '<p class="text-xs text-slate-400">មិនទាន់មានបញ្ជីមន្ត្រី</p>';
+  $('as-extra').value = extra.join(' / ');
+  $('assignee-modal').classList.remove('hidden');
+}
+window.closeAssigneeModal = function () { $('assignee-modal').classList.add('hidden'); };
+window.saveAssignee = async function (e) {
+  e.preventDefault();
+  const t = frameworkTasks.find(x => x.id === +$('as-task-id').value); if (!t) return;
+  const names = [...document.querySelectorAll('#as-staff-list .as-check:checked')].map(c => c.value);
+  $('as-extra').value.split('/').map(x => x.trim()).filter(Boolean).forEach(n => { if (!names.includes(n)) names.push(n); });
+  t.assignee = names.join(' / ');
+  closeAssigneeModal(); autoBackupData(); refreshAll();
+  if (cloud.ready) {
+    try { await cloudSet('frameworkTasks', t.id, t); showToast('បានប្តូរមន្ត្រីទទួលបន្ទុក'); }
+    catch (err) { console.error(err); showToast('រក្សាទុកលើ Cloud មិនបាន', true); }
+  } else { saveLocalTasks(); showToast('បានប្តូរមន្ត្រីទទួលបន្ទុក'); }
+};
+
+// =====================================================================
+// 9. WORK LOGS
+// =====================================================================
+function quickLogTask(taskId) {
+  const t = frameworkTasks.find(x => x.id === +taskId); if (!t) return;
+  switchTab('log'); resetLogForm();
+  const s = staffList.find(x => t.assignee.includes(x.name));
+  if (s) $('log-staff').value = s.id;
+  populateFrameworkTaskDropdown($('log-staff').value);
+  $('log-framework-task').value = t.id;
+  $('log-description').value = `អនុវត្ត${t.title}`;
+  $('log-description').focus();
+}
+function logForStaff(id) {
+  switchTab('log'); resetLogForm();
+  $('log-staff').value = id; filterTasksByStaff(); $('log-description').focus();
+}
+window.filterTasksByStaff = function () { $('log-framework-task').value = ''; populateFrameworkTaskDropdown($('log-staff').value); };
+window.autoFillTaskTitle = function () {
+  const t = frameworkTasks.find(x => x.id === parseInt($('log-framework-task').value));
+  if (t && !$('log-description').value.trim()) $('log-description').value = `អនុវត្ត${t.title}`;
+};
+window.saveWorkLog = async function (e) {
+  e.preventDefault();
+  const editId = $('log-id').value;
+  const staff = staffById($('log-staff').value);
+  if (!staff) { showToast('សូមជ្រើសរើសមន្ត្រី', true); return; }
+  const taskVal = parseInt($('log-framework-task').value);
+  const obj = {
+    id: editId || String(Date.now()),
+    date: $('log-date').value, staffId: staff.id, staffName: staff.name,
+    taskId: Number.isFinite(taskVal) ? taskVal : null,
+    description: $('log-description').value.trim(),
+    quantity: Math.max(1, parseInt($('log-quantity').value) || 1),
+    unit: $('log-unit').value.trim() || 'ករណី',
+    status: $('log-status').value, note: $('log-note').value.trim()
+  };
+  if (!obj.date || !obj.description) { showToast('សូមបំពេញកាលបរិច្ឆេទ និងខ្លឹមសារការងារ', true); return; }
+  if (!isAdmin() && (!mineStaff() || mineStaff().id !== staff.id)) { showToast('អ៊ីមែលរបស់អ្នកមិនទាន់ភ្ជាប់នឹងមន្ត្រីណាទេ សូមទាក់ទងអ្នកគ្រប់គ្រង', true); return; }
+  const prev = workLogs.find(l => String(l.id) === String(obj.id));
+  if (prev && !canEditLog(prev)) { showToast('អ្នកមិនមានសិទ្ធិកែកំណត់ត្រានេះទេ', true); return; }
+  obj.createdBy = (prev && prev.createdBy) || (cloud.user ? cloud.user.uid : null);
+  const toRemove = [...removedAttachments];
+  const rawLinks = $('log-links').value.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+  if (rawLinks.some(x => !/^https?:\/\//i.test(x))) { showToast('តំណត្រូវចាប់ផ្តើមដោយ https://', true); return; }
+  obj.links = rawLinks;
+  {
+    const files = [...$('log-files').files];
+    const keptSize = editingAttachments.reduce((a, x) => a + (x.size || 0), 0);
+    if (!hasStorage() && keptSize + files.reduce((a, f) => a + f.size, 0) > 700 * 1024) { showToast('ឯកសារធំពេក (មិនមាន Cloud Storage អនុញ្ញាតសរុប ≤ 700KB)', true); return; }
+    const b0 = $('btn-save-log'); b0.disabled = true;
+    try { const up = files.length ? await uploadFiles(files, obj.id) : []; obj.attachments = [...editingAttachments, ...up]; }
+    catch (err) { console.error(err); showToast('Upload ឯកសារមិនបាន៖ ' + (err.code || err.message || ''), true); b0.disabled = false; $('upload-progress').classList.add('hidden'); return; }
+    b0.disabled = false; $('upload-progress').classList.add('hidden');
+  }
+  const i = workLogs.findIndex(l => String(l.id) === String(obj.id));
+  if (i >= 0) workLogs[i] = obj; else workLogs.unshift(obj);
+  saveLocal(); autoBackupData(); resetLogForm(); refreshAll();
+  const btn = $('btn-save-log'); btn.disabled = true;
+  try { await cloudSet('workLogs', obj.id, obj); deleteStoredFiles(toRemove); showToast(editId ? 'បានកែប្រែកំណត់ត្រាការងារ!' : 'បានកត់ត្រាការងារជោគជ័យ!'); }
+  catch (err) { console.error(err); showToast('រក្សាទុកក្នុងម៉ាស៊ីនបាន ប៉ុន្តែមិនទាន់ Sync ទៅ Cloud', true); }
+  finally { btn.disabled = false; }
+};
+function editWorkLog(id) {
+  const l = workLogs.find(x => String(x.id) === String(id)); if (!l) return;
+  if (!canEditLog(l)) { showToast('អ្នកមិនមានសិទ្ធិកែកំណត់ត្រានេះទេ', true); return; }
+  $('log-id').value = l.id; $('log-date').value = l.date;
+  $('log-staff').value = logStaffId(l); populateFrameworkTaskDropdown($('log-staff').value);
+  $('log-framework-task').value = l.taskId || '';
+  $('log-description').value = l.description; $('log-quantity').value = l.quantity; $('log-unit').value = l.unit;
+  $('log-status').value = l.status; $('log-note').value = l.note || '';
+  editingAttachments = [...(l.attachments || [])]; removedAttachments = []; $('log-files').value = ''; $('log-links').value = (l.links || []).join('\n'); renderLogAttachments();
+  $('btn-save-log-text').textContent = 'ធ្វើបច្ចុប្បន្នភាព';
+  $('log-form-title').lastChild.textContent = ' កែប្រែកំណត់ត្រាការងារ';
+  $('work-log-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  $('log-description').focus();
+}
+async function deleteWorkLog(id) {
+  const target = workLogs.find(l => String(l.id) === String(id));
+  if (target && !canEditLog(target)) { showToast('អ្នកមិនមានសិទ្ធិលុបកំណត់ត្រានេះទេ', true); return; }
+  if (!confirm('លុបកំណត់ត្រាការងារនេះមែនទេ?')) return;
+  const delFiles = (target && target.attachments) || [];
+  workLogs = workLogs.filter(l => String(l.id) !== String(id));
+  saveLocal(); refreshAll();
+  try { await cloudDel('workLogs', id); deleteStoredFiles(delFiles); showToast('បានលុបកំណត់ត្រាការងារ'); } catch (e) { showToast('លុបលើ Cloud មិនបាន', true); }
+}
+window.resetLogForm = function () {
+  $('work-log-form').reset(); $('log-id').value = ''; editingAttachments = []; removedAttachments = []; renderLogAttachments();
+  $('log-date').value = todayStr; $('log-quantity').value = 1; $('log-unit').value = 'ច្បាប់ / ករណី';
+  $('btn-save-log-text').textContent = 'រក្សាទុកការងារ';
+  $('log-form-title').lastChild.textContent = ' កត់ត្រាលទ្ធផលអនុវត្តការងារប្រចាំថ្ងៃ';
+  populateFrameworkTaskDropdown($('log-staff').value);
+};
+function filteredLogs() {
+  const sf = $('log-filter-staff').value, st = $('log-filter-status').value, mo = $('log-filter-month').value;
+  const q = $('log-search').value.toLowerCase().trim();
+  return sortLogsDesc(workLogs.filter(l =>
+    (sf === 'all' || logStaffId(l) === sf) && (st === 'all' || l.status === st) && (!mo || l.date.startsWith(mo)) &&
+    (!q || `${l.description} ${l.note || ''} ${logStaffName(l)}`.toLowerCase().includes(q))));
+}
+window.renderLogTable = function () {
+  const list = filteredLogs();
+  $('log-count').textContent = `(${list.length}/${workLogs.length})`;
+  $('all-logs-tbody').innerHTML = list.length ? list.map(l => {
+    const t = l.taskId ? frameworkTasks.find(x => x.id === +l.taskId) : null;
+    return `<tr class="hover:bg-slate-50 transition">
+      <td class="py-3 px-3 font-medium text-slate-600 whitespace-nowrap">${formatKhmerDate(l.date)}</td>
+      <td class="py-3 px-3 font-bold text-blue-900 whitespace-nowrap">${esc(logStaffName(l))}</td>
+      <td class="py-3 px-3 text-slate-700">${esc(l.description)}
+        ${t ? `<span class="block text-[10px] text-blue-600 mt-0.5">ក្របខ័ណ្ឌ #${t.id}</span>` : ''}
+        ${l.note ? `<span class="block text-[11px] text-slate-400 mt-0.5">សម្គាល់៖ ${esc(l.note)}</span>` : ''}${attachLinks(l)}</td>
+      <td class="py-3 px-3 text-center font-semibold text-slate-700 whitespace-nowrap">${esc(l.quantity)} ${esc(l.unit)}</td>
+      <td class="py-3 px-3 text-center whitespace-nowrap">${getStatusBadge(l.status)}</td>
+      <td class="py-3 px-3 text-center whitespace-nowrap"><span class="${canEditLog(l) ? '' : 'hidden'}">
+        <button data-act="editLog" data-id="${esc(l.id)}" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-lg" title="កែប្រែ"><i class="fa-solid fa-pen"></i></button>
+        <button data-act="deleteLog" data-id="${esc(l.id)}" class="text-red-500 hover:bg-red-50 p-1.5 rounded-lg" title="លុប"><i class="fa-solid fa-trash"></i></button>
+      </span></td></tr>`;
+  }).join('') : `<tr><td colspan="6" class="text-center py-8 text-slate-400">មិនមានកំណត់ត្រាការងារទេ</td></tr>`;
+};
+
+// =====================================================================
+// 9c. គ្រប់គ្រងលិខិតចូល-ចេញ (INCOMING & OUTGOING DOCUMENTS)
+// =====================================================================
+function suggestNextDocNo(direction) {
+  const yr = String(currentYear).slice(-2);
+  const count = documentsList.filter(d => d.direction === direction && (d.regDate || '').startsWith(String(currentYear))).length + 1;
+  const seq = String(count).padStart(3, '0');
+  return direction === 'incoming' ? `${toKhmerNum(seq)}/${toKhmerNum(yr)} ចូល` : `${toKhmerNum(seq)}/${toKhmerNum(yr)} ក.ប.ប`;
+}
+window.onDocDirectionChange = function () {
+  const dir = $('doc-direction').value;
+  $('doc-reg-date-label').textContent = dir === 'incoming' ? 'ថ្ងៃខែឆ្នាំទទួល *' : 'ថ្ងៃខែឆ្នាំបញ្ជូនចេញ *';
+  $('doc-party-label').textContent = dir === 'incoming' ? 'ប្រភពលិខិត (មកពីអង្គភាព / ស្ថាប័ន) *' : 'គោលដៅលិខិត (ផ្ញើជូនអង្គភាព / ស្ថាប័ន) *';
+  if (!$('doc-id').value) $('doc-reg-no').value = suggestNextDocNo(dir);
+};
+function getDocStatusBadge(s) {
+  if (s === 'completed') return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><i class="fa-solid fa-check-circle"></i> រួចរាល់</span>`;
+  if (s === 'processing') return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200"><i class="fa-solid fa-spinner"></i> កំពុងចាត់ការ</span>`;
+  return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200"><i class="fa-solid fa-clock"></i> រង់ចាំចំណារ</span>`;
+}
+function docStatusText(s) { return s === 'completed' ? 'បានចាត់ការរួច' : s === 'processing' ? 'កំពុងចាត់ការ' : 'រង់ចាំចំណារ'; }
+
+window.saveDocument = async function (e) {
+  e.preventDefault();
+  const editId = $('doc-id').value;
+  const dir = $('doc-direction').value;
+  const regNo = $('doc-reg-no').value.trim();
+  const regDate = $('doc-reg-date').value;
+  const party = $('doc-party').value.trim();
+  const subject = $('doc-subject').value.trim();
+  const link = $('doc-link').value.trim();
+  if (!regNo || !regDate || !party || !subject) { showToast('សូមបំពេញព័ត៌មានចាំបាច់ (*)', true); return; }
+  if (link && !/^https?:\/\//i.test(link)) { showToast('តំណឯកសារត្រូវចាប់ផ្តើមដោយ https://', true); return; }
+
+  const assigneeId = $('doc-assignee').value;
+  const assignee = staffById(assigneeId);
+  const prev = documentsList.find(d => String(d.id) === String(editId));
+  if (prev && !canEditDoc(prev)) { showToast('អ្នកមិនមានសិទ្ធិកែលិខិតនេះទេ', true); return; }
+
+  const obj = {
+    id: editId || 'doc_' + Date.now(),
+    direction: dir,
+    regNo,
+    refNo: $('doc-ref-no').value.trim(),
+    category: $('doc-category').value,
+    docDate: $('doc-date').value || regDate,
+    regDate,
+    party,
+    subject,
+    assigneeId: assignee ? assignee.id : '',
+    assigneeName: assignee ? assignee.name : '',
+    status: $('doc-status').value,
+    note: $('doc-note').value.trim(),
+    link,
+    createdBy: (prev && prev.createdBy) || (cloud.user ? cloud.user.uid : null)
+  };
+
+  const idx = documentsList.findIndex(d => String(d.id) === String(obj.id));
+  if (idx >= 0) documentsList[idx] = obj; else documentsList.unshift(obj);
+
+  // បង្កើតកំណត់ត្រាការងារស្វ័យប្រវត្តិ (មុខងារ #42 លិខិតចូល / #43 លិខិតចេញ) បើបានធីក
+  let autoLogObj = null;
+  if ($('doc-auto-log').checked && !editId) {
+    const taskId = dir === 'incoming' ? 42 : 43;
+    const logStaff = assignee || staffList.find(s => s.name === 'ខែក គឹមថេង') || mineStaff() || staffList[0];
+    if (logStaff) {
+      autoLogObj = {
+        id: String(Date.now() + 1),
+        date: regDate,
+        staffId: logStaff.id,
+        staffName: logStaff.name,
+        taskId,
+        description: `${dir === 'incoming' ? 'ទទួល និងផ្សព្វផ្សាយលិខិតចូល' : 'រៀបចំ និងបញ្ជូនលិខិតចេញ'} លេខ ${regNo} (${party})៖ ${subject}`,
+        quantity: 1,
+        unit: 'ច្បាប់',
+        status: obj.status === 'completed' ? 'completed' : 'in-progress',
+        note: obj.note,
+        links: link ? [link] : [],
+        attachments: [],
+        createdBy: cloud.user ? cloud.user.uid : null
+      };
+      workLogs.unshift(autoLogObj);
+    }
+  }
+
+  saveLocal();
+  autoBackupData();
+  resetDocForm();
+  refreshAll();
+
+  try {
+    await cloudSet('documents', obj.id, obj);
+    if (autoLogObj) await cloudSet('workLogs', autoLogObj.id, autoLogObj);
+    showToast(editId ? 'បានធ្វើបច្ចុប្បន្នភាពលិខិត!' : 'បានចុះបញ្ជីលិខិតជោគជ័យ!');
+  } catch (err) {
+    console.error(err);
+    showToast('រក្សាទុកក្នុងម៉ាស៊ីនបាន ប៉ុន្តែមិនទាន់ Sync ទៅ Cloud (ពិនិត្យ Rules: documents)', true);
+  }
+};
+
+function editDocument(id) {
+  const d = documentsList.find(x => String(x.id) === String(id)); if (!d) return;
+  if (!canEditDoc(d)) { showToast('អ្នកមិនមានសិទ្ធិកែលិខិតនេះទេ', true); return; }
+  $('doc-id').value = d.id;
+  $('doc-direction').value = d.direction;
+  onDocDirectionChange();
+  $('doc-reg-no').value = d.regNo;
+  $('doc-ref-no').value = d.refNo || '';
+  $('doc-category').value = d.category || 'លិខិតរដ្ឋបាល';
+  $('doc-date').value = d.docDate || d.regDate;
+  $('doc-reg-date').value = d.regDate;
+  $('doc-party').value = d.party;
+  $('doc-subject').value = d.subject;
+  $('doc-assignee').value = d.assigneeId || '';
+  $('doc-status').value = d.status || 'pending';
+  $('doc-note').value = d.note || '';
+  $('doc-link').value = d.link || '';
+  $('doc-auto-log').checked = false;
+  $('btn-save-doc-text').textContent = 'ធ្វើបច្ចុប្បន្នភាពលិខិត';
+  $('doc-form-title').lastChild.textContent = ' កែប្រែព័ត៌មានលិខិត';
+  $('doc-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function cycleDocStatus(id) {
+  const d = documentsList.find(x => String(x.id) === String(id)); if (!d) return;
+  if (!canEditDoc(d)) { showToast('អ្នកមិនមានសិទ្ធិប្តូរស្ថានភាពលិខិតនេះទេ', true); return; }
+  const order = ['pending', 'processing', 'completed'];
+  d.status = order[(order.indexOf(d.status) + 1) % order.length];
+  saveLocal(); refreshAll();
+  try { await cloudSet('documents', d.id, d); showToast(`ប្តូរស្ថានភាពទៅជា៖ ${docStatusText(d.status)}`); } catch (e) {}
+}
+
+async function deleteDocument(id) {
+  const d = documentsList.find(x => String(x.id) === String(id)); if (!d) return;
+  if (!canEditDoc(d)) { showToast('អ្នកមិនមានសិទ្ធិលុបលិខិតនេះទេ', true); return; }
+  if (!confirm(`លុបលិខិតលេខ «${d.regNo}» ចេញពីបញ្ជីមែនទេ?`)) return;
+  documentsList = documentsList.filter(x => String(x.id) !== String(id));
+  saveLocal(); refreshAll();
+  try { await cloudDel('documents', id); showToast('បានលុបលិខិតចេញពីបញ្ជី'); } catch (e) { showToast('លុបលើ Cloud មិនបាន', true); }
+}
+
+window.resetDocForm = function () {
+  $('doc-form').reset();
+  $('doc-id').value = '';
+  $('doc-direction').value = 'incoming';
+  $('doc-date').value = todayStr;
+  $('doc-reg-date').value = todayStr;
+  const defStaff = staffList.find(s => s.name === 'ខែក គឹមថេង');
+  if (defStaff) $('doc-assignee').value = defStaff.id;
+  onDocDirectionChange();
+  $('btn-save-doc-text').textContent = 'រក្សាទុកលិខិត';
+  $('doc-form-title').lastChild.textContent = ' ចុះលេខលិខិតចូល - លិខិតចេញ';
+};
+
+function filteredDocs() {
+  const q = ($('doc-search').value || '').toLowerCase().trim();
+  const mo = $('doc-filter-month').value;
+  const dir = $('doc-filter-dir').value;
+  const st = $('doc-filter-status').value;
+  return [...documentsList]
+    .sort((a, b) => (b.regDate || '').localeCompare(a.regDate || '') || String(b.id).localeCompare(String(a.id)))
+    .filter(d =>
+      (dir === 'all' || d.direction === dir) &&
+      (st === 'all' || d.status === st) &&
+      (!mo || (d.regDate || '').startsWith(mo)) &&
+      (!q || `${d.regNo} ${d.refNo || ''} ${d.party} ${d.subject} ${d.assigneeName || ''} ${d.note || ''}`.toLowerCase().includes(q))
+    );
+}
+
+window.renderDocsTable = function () {
+  if (!$('docs-tbody')) return;
+  const thisMonthDocs = documentsList.filter(d => (d.regDate || '').startsWith(currentYM));
+  $('doc-kpi-in').textContent = toKhmerNum(thisMonthDocs.filter(d => d.direction === 'incoming').length);
+  $('doc-kpi-out').textContent = toKhmerNum(thisMonthDocs.filter(d => d.direction === 'outgoing').length);
+  $('doc-kpi-pending').textContent = toKhmerNum(documentsList.filter(d => d.status !== 'completed').length);
+  $('doc-kpi-done').textContent = toKhmerNum(documentsList.filter(d => d.status === 'completed').length);
+
+  const list = filteredDocs();
+  $('doc-list-count').textContent = `(${list.length}/${documentsList.length})`;
+  $('docs-tbody').innerHTML = list.length ? list.map(d => {
+    const isIn = d.direction === 'incoming';
+    const dirBadge = isIn
+      ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-blue-800"><i class="fa-solid fa-arrow-down-left"></i> លិខិតចូល</span>`
+      : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-100 text-indigo-800"><i class="fa-solid fa-arrow-up-right"></i> លិខិតចេញ</span>`;
+    const assignee = (staffById(d.assigneeId) || {}).name || d.assigneeName || '-';
+    return `<tr class="hover:bg-slate-50 transition">
+      <td class="py-2.5 px-2.5 whitespace-nowrap align-top">
+        ${dirBadge}
+        <div class="font-mono font-bold text-slate-900 mt-1">${esc(d.regNo)}</div>
+        ${d.refNo ? `<div class="text-[10px] text-slate-400">យោង៖ ${esc(d.refNo)}</div>` : ''}
+      </td>
+      <td class="py-2.5 px-2.5 whitespace-nowrap align-top text-slate-600">
+        <div class="font-medium">${formatKhmerDate(d.regDate)}</div>
+        ${d.docDate && d.docDate !== d.regDate ? `<div class="text-[10px] text-slate-400">ចុះថ្ងៃ៖ ${formatKhmerDate(d.docDate)}</div>` : ''}
+        <span class="inline-block mt-0.5 text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">${esc(d.category || '')}</span>
+      </td>
+      <td class="py-2.5 px-3 align-top">
+        <div class="font-bold text-blue-950">${isIn ? 'ពី៖' : 'ជូន៖'} ${esc(d.party)}</div>
+        <div class="text-slate-700 mt-0.5 leading-relaxed">${esc(d.subject)}</div>
+        ${d.note ? `<div class="text-[11px] text-amber-700 mt-0.5"><i class="fa-solid fa-comment-dots mr-1"></i>${esc(d.note)}</div>` : ''}
+        ${d.link && safeUrl(d.link) ? `<a href="${esc(d.link)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] text-emerald-700 hover:underline mt-1"><i class="fa-solid fa-file-pdf"></i> មើលឯកសារស្កេន</a>` : ''}
+      </td>
+      <td class="py-2.5 px-2.5 whitespace-nowrap align-top font-semibold text-slate-700">${esc(assignee)}</td>
+      <td class="py-2.5 px-2.5 text-center whitespace-nowrap align-top">
+        <button data-act="cycleDocStatus" data-id="${esc(d.id)}" title="ចុចដើម្បីប្តូរស្ថានភាព" class="hover:opacity-80 transition">${getDocStatusBadge(d.status)}</button>
+      </td>
+      <td class="py-2.5 px-2.5 text-center whitespace-nowrap align-top no-print">
+        <span class="${canEditDoc(d) ? '' : 'hidden'}">
+          <button data-act="editDoc" data-id="${esc(d.id)}" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-lg" title="កែប្រែ"><i class="fa-solid fa-pen"></i></button>
+          <button data-act="deleteDoc" data-id="${esc(d.id)}" class="text-red-500 hover:bg-red-50 p-1.5 rounded-lg" title="លុប"><i class="fa-solid fa-trash"></i></button>
+        </span>
+      </td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="6" class="text-center py-8 text-slate-400">មិនទាន់មានកំណត់ត្រាលិខិតចូល-ចេញទេ</td></tr>`;
+};
+
+window.exportDocsCSV = function () {
+  const rows = [['ប្រភេទ', 'លេខចុះបញ្ជី', 'លេខយោង', 'ប្រភេទឯកសារ', 'ថ្ងៃចុះលិខិត', 'ថ្ងៃទទួល/បញ្ជូន', 'ប្រភព/គោលដៅ', 'កម្មវត្ថុ', 'មន្ត្រីចាត់ការ', 'ស្ថានភាព', 'ចំណារ/សម្គាល់', 'តំណឯកសារ']];
+  filteredDocs().forEach(d => rows.push([
+    d.direction === 'incoming' ? 'លិខិតចូល' : 'លិខិតចេញ',
+    d.regNo, d.refNo || '', d.category || '', d.docDate || '', d.regDate || '',
+    d.party, d.subject, (staffById(d.assigneeId) || {}).name || d.assigneeName || '',
+    docStatusText(d.status), d.note || '', d.link || ''
+  ]));
+  downloadFile(`correspondence-${todayStr}.csv`, toCSV(rows), 'text/csv;charset=utf-8');
+};
+
+window.printDocsRegister = function () {
+  const st = document.createElement('style');
+  st.textContent = '@page{size:A4 landscape;margin:10mm}';
+  document.head.appendChild(st);
+  const done = () => { st.remove(); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  window.print();
+};
+
+// =====================================================================
+// 10. REPORTS
+// =====================================================================
+window.handleReportTypeChange = function () {
+  const type = $('report-type').value;
+  ['daily', 'weekly', 'monthly', 'annual'].forEach(t => $(`period-${t}-box`).classList.toggle('hidden', t !== type));
+  generateReport();
+};
+window.generateReport = function () {
+  const type = $('report-type').value, sid = $('report-staff').value;
+  let logs = [], docs = [], title = '', sub = '', month = null, ym = null;
+
+  if (type === 'daily') {
+    const d = $('report-date').value || todayStr;
+    logs = workLogs.filter(l => l.date === d);
+    docs = documentsList.filter(x => x.regDate === d);
+    title = 'របាយការណ៍ស្តីពីការអនុវត្តការងារប្រចាំថ្ងៃ'; sub = `ថ្ងៃទី ${formatKhmerDate(d)}`;
+  } else if (type === 'weekly') {
+    const s = $('report-week-start').value || todayStr, e = addDays(s, 6);
+    logs = workLogs.filter(l => l.date >= s && l.date <= e);
+    docs = documentsList.filter(x => x.regDate >= s && x.regDate <= e);
+    title = 'របាយការណ៍ស្តីពីការអនុវត្តការងារប្រចាំសប្តាហ៍'; sub = `ចាប់ពីថ្ងៃទី ${formatKhmerDate(s)} ដល់ថ្ងៃទី ${formatKhmerDate(e)}`;
+  } else if (type === 'monthly') {
+    ym = $('report-month').value || currentYM;
+    const [y, m] = ym.split('-'); month = parseInt(m);
+    logs = workLogs.filter(l => l.date.startsWith(ym));
+    docs = documentsList.filter(x => (x.regDate || '').startsWith(ym));
+    title = `របាយការណ៍ស្តីពីការអនុវត្តការងារប្រចាំខែ${khmerMonthsShort[month - 1]} ឆ្នាំ${toKhmerNum(y)}`; sub = 'ការិយាល័យបុគ្គលិក និងបណ្តុះបណ្តាល';
+  } else {
+    const y = $('report-year').value || String(currentYear);
+    logs = workLogs.filter(l => l.date.startsWith(y));
+    docs = documentsList.filter(x => (x.regDate || '').startsWith(y));
+    title = `របាយការណ៍បូកសរុបលទ្ធផលអនុវត្តការងារប្រចាំឆ្នាំ ${toKhmerNum(y)}`; sub = 'ការិយាល័យបុគ្គលិក និងបណ្តុះបណ្តាល';
+  }
+
+  const head = staffList.find(s => s.role === 'ប្រធានការិយាល័យ');
+  if (sid !== 'all') {
+    logs = logs.filter(l => logStaffId(l) === sid);
+    docs = docs.filter(x => x.assigneeId === sid);
+    const s = staffById(sid);
+    sub = `របស់លោក/លោកស្រី ${s ? s.name : ''} (${s ? s.role : ''}) — ${sub}`;
+    $('rep-sign-role').textContent = s ? s.role : 'មន្ត្រីទទួលបន្ទុក'; $('rep-sign-name').textContent = s ? s.name : '';
+  } else {
+    $('rep-sign-role').textContent = 'ប្រធានការិយាល័យបុគ្គលិក និងបណ្តុះបណ្តាល'; $('rep-sign-name').textContent = head ? head.name : '';
+  }
+  logs = [...logs].sort((a, b) => a.date.localeCompare(b.date) || String(a.id).localeCompare(String(b.id)));
+  docs = [...docs].sort((a, b) => (a.regDate || '').localeCompare(b.regDate || ''));
+  $('rep-main-title').textContent = title; $('rep-sub-title').textContent = sub;
+
+  const total = logs.length, done = logs.filter(l => l.status === 'completed').length;
+  const docInCount = docs.filter(x => x.direction === 'incoming').length;
+  const docOutCount = docs.filter(x => x.direction === 'outgoing').length;
+  $('rep-stat-total').textContent = `${toKhmerNum(total)} ករណី`;
+  $('rep-stat-done').textContent = `${toKhmerNum(done)} ករណី`;
+  $('rep-stat-pending').textContent = `${toKhmerNum(total - done)} ករណី`;
+  $('rep-stat-docs').textContent = `${toKhmerNum(docInCount)} ចូល / ${toKhmerNum(docOutCount)} ចេញ`;
+
+  const showSummary = sid === 'all' && type !== 'daily' && total > 0;
+  $('rep-summary-box').classList.toggle('hidden', !showSummary);
+  $('rep-detail-title').textContent = showSummary ? '២. តារាងលម្អិតសកម្មភាពការងារ' : '១. តារាងលម្អិតសកម្មភាពការងារ';
+  if (showSummary) {
+    $('rep-summary-body').innerHTML = staffList.map(s => {
+      const mine = logs.filter(l => logStaffId(l) === s.id), d = mine.filter(l => l.status === 'completed').length;
+      return `<tr><td class="border border-slate-400 py-1.5 px-2">${esc(s.name)}</td><td class="border border-slate-400 py-1.5 px-2">${esc(s.role)}</td><td class="border border-slate-400 py-1.5 px-2 text-center">${toKhmerNum(mine.length)}</td><td class="border border-slate-400 py-1.5 px-2 text-center">${toKhmerNum(d)}</td><td class="border border-slate-400 py-1.5 px-2 text-center">${mine.length ? toKhmerNum(Math.round(d / mine.length * 100)) + '%' : '-'}</td></tr>`;
+    }).join('');
+  }
+
+  $('rep-table-body').innerHTML = logs.length ? logs.map((l, i) => `<tr>
+      <td class="border border-slate-400 py-2 px-2 text-center">${toKhmerNum(i + 1)}</td>
+      <td class="border border-slate-400 py-2 px-2 text-center">${formatKhmerDate(l.date)}</td>
+      <td class="border border-slate-400 py-2 px-3">${esc(l.description)}${l.note ? `<br><span class="text-[10px] text-slate-500">សម្គាល់៖ ${esc(l.note)}</span>` : ''}${(l.links || []).filter(safeUrl).length ? `<br><span class="text-[10px] text-blue-700">ឯកសារ៖ ${(l.links || []).filter(safeUrl).map((u, idx) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">តំណ${toKhmerNum(idx + 1)}</a>`).join(' · ')}</span>` : ''}</td>
+      <td class="border border-slate-400 py-2 px-2 text-center font-semibold">${toKhmerNum(l.quantity)} ${esc(l.unit)}</td>
+      <td class="border border-slate-400 py-2 px-2">${esc(logStaffName(l))}</td>
+      <td class="border border-slate-400 py-2 px-2 text-center">${statusText(l.status)}</td></tr>`).join('')
+    : `<tr><td colspan="6" class="border border-slate-400 py-6 text-center text-slate-500 italic">មិនមានទិន្នន័យកំណត់ត្រាការងារសម្រាប់កំឡុងពេលដែលបានជ្រើសរើសនេះទេ។</td></tr>`;
+
+  // តារាងលិខិតចូល-ចេញក្នុងរបាយការណ៍
+  const docsBox = $('rep-docs-box');
+  if (docs.length) {
+    docsBox.classList.remove('hidden');
+    $('rep-docs-title').textContent = `${showSummary ? '៣' : '២'}. តារាងលិខិតរដ្ឋបាលចូល-ចេញ (សរុប ${toKhmerNum(docs.length)} ច្បាប់៖ ចូល ${toKhmerNum(docInCount)}, ចេញ ${toKhmerNum(docOutCount)})`;
+    $('rep-docs-body').innerHTML = docs.map((d, i) => `<tr>
+      <td class="border border-slate-400 py-1.5 px-2 text-center">${toKhmerNum(i + 1)}</td>
+      <td class="border border-slate-400 py-1.5 px-2 text-center">${d.direction === 'incoming' ? 'លិខិតចូល' : 'លិខិតចេញ'}</td>
+      <td class="border border-slate-400 py-1.5 px-2 font-semibold">${esc(d.regNo)}</td>
+      <td class="border border-slate-400 py-1.5 px-2 text-center">${formatKhmerDate(d.regDate)}</td>
+      <td class="border border-slate-400 py-1.5 px-2"><strong>${d.direction === 'incoming' ? 'ពី៖' : 'ជូន៖'} ${esc(d.party)}</strong> — ${esc(d.subject)}</td>
+      <td class="border border-slate-400 py-1.5 px-2 text-center">${docStatusText(d.status)}</td>
+    </tr>`).join('');
+  } else {
+    docsBox.classList.add('hidden');
+  }
+
+  const box = $('rep-framework-context');
+  if (type === 'monthly' && month) {
+    box.classList.remove('hidden');
+    let tasks = frameworkTasks.filter(t => t.months.includes(month));
+    if (sid !== 'all') { const s = staffById(sid); tasks = s ? tasks.filter(t => t.assignee.includes(s.name)) : []; }
+    $('rep-framework-list').innerHTML = tasks.length ? tasks.map(t => {
+      const n = workLogs.filter(l => String(l.taskId) === String(t.id) && l.date.startsWith(ym)).length;
+      return `<p>${n ? '☑' : '☐'} <strong>${esc(t.title)}</strong> — ${esc(t.assignee)} ${n ? `<span class="text-emerald-700">(មានកំណត់ត្រា ${toKhmerNum(n)})</span>` : '<span class="text-slate-400">(មិនទាន់មានកំណត់ត្រា)</span>'}</p>`;
+    }).join('') : `<p>អនុវត្តតាមភារកិច្ចប្រចាំថ្ងៃ និងតាមការចាត់ចែងរបស់ថ្នាក់ដឹកនាំ។</p>`;
+  } else box.classList.add('hidden');
+
+  const dStr = longKhmerDate();
+  $('rep-solar-date').textContent = dStr; $('rep-sign-date').textContent = dStr;
+};
+
+// =====================================================================
+// 11. EXPORT / BACKUP
+// =====================================================================
+window.exportLogsCSV = function () {
+  const rows = [['កាលបរិច្ឆេទ', 'មន្ត្រី', 'ខ្លឹមសារការងារ', 'ក្របខ័ណ្ឌ #', 'បរិមាណ', 'ឯកតា', 'ស្ថានភាព', 'ចំណាំ', 'តំណឯកសារ']];
+  filteredLogs().forEach(l => rows.push([l.date, logStaffName(l), l.description, l.taskId || '', l.quantity, l.unit, statusText(l.status), l.note || '', (l.links || []).join(' ')]));
+  downloadFile(`work-logs-${todayStr}.csv`, toCSV(rows), 'text/csv;charset=utf-8');
+};
+window.exportStaffCSV = function () {
+  const rows = [['អត្តលេខ', 'ឈ្មោះ', 'ភេទ', 'តួនាទី', 'ក្របខ័ណ្ឌ', 'កាំប្រាក់', 'ថ្ងៃឡើងកាំ', 'ថ្ងៃចូលបម្រើការងារ', 'កម្រិតវប្បធម៌', 'ភារកិច្ច']];
+  staffList.forEach(s => rows.push([s.id, s.name, s.gender === 'ស' ? 'ស្រី' : 'ប្រុស', s.role, s.framework, s.rank, s.lastRankDate, s.startDate, s.education, (s.duties || []).join(' | ')]));
+  downloadFile(`staff-${todayStr}.csv`, toCSV(rows), 'text/csv;charset=utf-8');
+};
+window.exportBackup = function () {
+  downloadFile(`hr-backup-${todayStr}.json`, JSON.stringify({ v: 3, exportedAt: new Date().toISOString(), staff: staffList, logs: workLogs, attendance, documents: documentsList }, null, 2), 'application/json');
+  showToast('បានបម្រុងទុកទិន្នន័យ');
+};
+window.importBackup = function (ev) {
+  const file = ev.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = async () => {
+    try {
+      const d = JSON.parse(r.result);
+      if (!Array.isArray(d.staff) || !Array.isArray(d.logs)) throw new Error('bad format');
+      const docCount = Array.isArray(d.documents) ? d.documents.length : 0;
+      if (!confirm(`ស្ដារទិន្នន័យ៖ មន្ត្រី ${d.staff.length}, កំណត់ត្រា ${d.logs.length} និងលិខិត ${docCount}?\nទិន្នន័យបច្ចុប្បន្ននឹងត្រូវជំនួស។`)) return;
+      staffList = d.staff; workLogs = d.logs;
+      if (Array.isArray(d.attendance)) attendance = d.attendance;
+      if (Array.isArray(d.documents)) documentsList = d.documents;
+      migrateLogs(); saveLocal(); refreshAll();
+      if (cloud.ready) {
+        for (const s of staffList) await cloudSet('staff', s.id, s);
+        for (const l of workLogs) await cloudSet('workLogs', l.id, l);
+        for (const a of attendance) await cloudSet('attendance', a.id, a);
+        for (const docItem of documentsList) await cloudSet('documents', docItem.id, docItem);
+      }
+      showToast('បានស្ដារទិន្នន័យជោគជ័យ!');
+    } catch (e) { console.error(e); showToast('ឯកសារមិនត្រឹមត្រូវ', true); }
+  };
+  r.readAsText(file); ev.target.value = '';
+};
+
+
+// =====================================================================
+// 11b. AUTO-BACKUP (បម្រុងទុកទិន្នន័យស្វ័យប្រវត្ត)
+// =====================================================================
+const AUTO_BACKUP_KEY = 'pursat-hr-auto-backup-history-v1';
+function autoBackupData() {
+  try {
+    const payload = {
+      v: 3,
+      backedUpAt: new Date().toISOString(),
+      staff: staffList,
+      logs: workLogs,
+      attendance,
+      documents: documentsList,
+      frameworkTasks
+    };
+    let history = [];
+    try {
+      const raw = localStorage.getItem(AUTO_BACKUP_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) history = parsed;
+      }
+    } catch (e) {}
+    history.unshift(payload);
+    if (history.length > 3) history = history.slice(0, 3);
+    localStorage.setItem(AUTO_BACKUP_KEY, JSON.stringify(history));
+  } catch (err) {
+    console.warn('Auto-backup failed:', err);
+  }
+}
+window.restoreAutoBackup = async function () {
+  try {
+    const raw = localStorage.getItem(AUTO_BACKUP_KEY);
+    if (!raw) { showToast('មិនទាន់មានទិន្នន័យ Auto-Backup នៅឡើយទេ', true); return; }
+    const history = JSON.parse(raw);
+    if (!Array.isArray(history) || !history.length) { showToast('មិនទាន់មានទិន្នន័យ Auto-Backup នៅឡើយទេ', true); return; }
+    const latest = history[0];
+    const dt = new Date(latest.backedUpAt).toLocaleString('km-KH');
+    if (!confirm(`ស្ដារទិន្នន័យពី Auto-Backup ចុងក្រោយ (${dt})?
+មន្ត្រី ${(latest.staff||[]).length} រូប, កំណត់ត្រា ${(latest.logs||[]).length}, លិខិត ${(latest.documents||[]).length}`)) return;
+    if (Array.isArray(latest.staff)) staffList = latest.staff;
+    if (Array.isArray(latest.logs)) workLogs = latest.logs;
+    if (Array.isArray(latest.attendance)) attendance = latest.attendance;
+    if (Array.isArray(latest.documents)) documentsList = latest.documents;
+    if (Array.isArray(latest.frameworkTasks)) frameworkTasks = latest.frameworkTasks;
+    migrateLogs(); saveLocal(); saveLocalTasks(); refreshAll();
+    if (cloud.ready) {
+      for (const s of staffList) await cloudSet('staff', s.id, s);
+      for (const l of workLogs) await cloudSet('workLogs', l.id, l);
+      for (const a of attendance) await cloudSet('attendance', a.id, a);
+      for (const docItem of documentsList) await cloudSet('documents', docItem.id, docItem);
+      for (const t of frameworkTasks) await cloudSet('frameworkTasks', t.id, t);
+    }
+    showToast('បានស្ដារទិន្នន័យពី Auto-Backup ជោគជ័យ!');
+  } catch (e) {
+    console.error(e);
+    showToast('មិនអាចស្ដារទិន្នន័យ Auto-Backup បានទេ', true);
+  }
+};
+setInterval(autoBackupData, 15 * 60 * 1000);
+
+// =====================================================================
+// 12. EVENTS & SUB-MODULES
+// =====================================================================
+function openTaskModal(id) {
+  if (!isAdmin()) return;
+  const t = id ? frameworkTasks.find(x => x.id === +id) : null;
+  if (id && !t) return;
+  $('tk-id').value = t ? t.id : '';
+  $('task-modal-title').textContent = t ? `កែប្រែការងារក្នុងក្របខ័ណ្ឌ #${t.id}` : 'បន្ថែមការងារថ្មីក្នុងក្របខ័ណ្ឌ';
+  $('tk-title').value = t ? t.title : '';
+  $('tk-note').value = t ? (t.note || '') : '';
+  $('tk-months').innerHTML = khmerMonthsShort.map((m, i) => `<label class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-slate-200 text-[11px] cursor-pointer hover:bg-blue-50"><input type="checkbox" class="tk-month accent-blue-600" value="${i + 1}" ${t && t.months.includes(i + 1) ? 'checked' : ''}> ${m}</label>`).join('');
+  const current = t ? String(t.assignee || '') : '';
+  const known = staffList.map(s => s.name);
+  $('tk-staff-list').innerHTML = staffList.map(s => `<label class="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:bg-blue-50 cursor-pointer text-xs"><input type="checkbox" class="tk-staff w-4 h-4 accent-blue-600" value="${esc(s.name)}" ${current.includes(s.name) ? 'checked' : ''}><span class="font-semibold text-slate-800">${esc(s.name)}</span><span class="text-slate-400">${esc(s.role || '')}</span></label>`).join('');
+  $('tk-extra').value = current.split('/').map(x => x.trim()).filter(x => x && !known.includes(x)).join(' / ');
+  $('tk-delete').classList.toggle('hidden', !t);
+  $('task-modal').classList.remove('hidden');
+}
+window.closeTaskModal = function () { $('task-modal').classList.add('hidden'); };
+window.tkMonths = function (on) { document.querySelectorAll('#tk-months .tk-month').forEach(c => c.checked = on); };
+window.saveTask = async function (e) {
+  e.preventDefault();
+  if (!isAdmin()) return;
+  const title = $('tk-title').value.trim();
+  const months = [...document.querySelectorAll('#tk-months .tk-month:checked')].map(c => +c.value);
+  if (!title) { showToast('សូមបញ្ចូលបរិយាយការងារ', true); return; }
+  if (!months.length) { showToast('សូមជ្រើសរើសយ៉ាងហោចណាស់មួយខែ', true); return; }
+  const names = [...document.querySelectorAll('#tk-staff-list .tk-staff:checked')].map(c => c.value);
+  $('tk-extra').value.split('/').map(x => x.trim()).filter(Boolean).forEach(n => { if (!names.includes(n)) names.push(n); });
+  const eid = $('tk-id').value;
+  let t = eid ? frameworkTasks.find(x => x.id === +eid) : null;
+  if (t) { t.title = title; t.months = months; t.assignee = names.join(' / '); t.note = $('tk-note').value.trim(); }
+  else {
+    t = { id: Math.max(0, ...frameworkTasks.map(x => x.id)) + 1, title, months, assignee: names.join(' / '), note: $('tk-note').value.trim() };
+    frameworkTasks.push(t); frameworkTasks.sort((a, b) => a.id - b.id);
+  }
+  closeTaskModal(); autoBackupData(); refreshAll();
+  if (cloud.ready) {
+    try { await cloudSet('frameworkTasks', t.id, t); showToast(eid ? 'បានកែប្រែការងារ' : 'បានបន្ថែមការងារថ្មី'); }
+    catch (err) { console.error(err); showToast('រក្សាទុកលើ Cloud មិនបាន', true); }
+  } else { saveLocalTasks(); showToast(eid ? 'បានកែប្រែការងារ' : 'បានបន្ថែមការងារថ្មី'); }
+};
+async function deleteTask(id) {
+  if (!isAdmin()) return;
+  const t = frameworkTasks.find(x => x.id === +id); if (!t) return;
+  if (!confirm(`លុបការងារ #${t.id} «${t.title}» ចេញពីក្របខ័ណ្ឌ?`)) return;
+  frameworkTasks = frameworkTasks.filter(x => x.id !== t.id);
+  closeTaskModal(); refreshAll();
+  if (cloud.ready) { try { await cloudDel('frameworkTasks', t.id); showToast('បានលុបការងារ'); } catch (e) { showToast('លុបលើ Cloud មិនបាន', true); } }
+  else { saveLocalTasks(); showToast('បានលុបការងារ'); }
+}
+
+const USE_STORAGE = false;
+const hasStorage = () => USE_STORAGE && !!(cloud.ready && cloud.storage);
+const maxFileSize = () => hasStorage() ? 10 * 1024 * 1024 : 500 * 1024;
+const fmtSize = n => n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+const safeUrl = u => /^https?:\/\//i.test(String(u || ''));
+function driveLinks(l) {
+  const a = (l.links || []).filter(safeUrl);
+  if (!a.length) return '';
+  return `<span class="block mt-1">${a.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] text-emerald-700 hover:underline mr-2"><i class="fa-brands fa-google-drive"></i>តំណឯកសារ ${toKhmerNum(i + 1)}</a>`).join('')}</span>`;
+}
+function attachLinks(l) { return attachLinksFiles(l) + driveLinks(l); }
+function attachLinksFiles(l) {
+  const a = l.attachments || [];
+  if (!a.length) return '';
+  return `<span class="block mt-1">${a.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener" download="${esc(f.name)}" class="inline-flex items-center gap-1 text-[11px] text-blue-600 hover:underline mr-2"><i class="fa-solid fa-paperclip"></i>${esc(f.name)}</a>`).join('')}</span>`;
+}
+function renderLogAttachments() {
+  const lim = $('log-file-limit'); if (!lim) return;
+  lim.textContent = hasStorage() ? 'អតិបរមា ១០MB ក្នុងមួយឯកសារ' : 'មិនមាន Cloud Storage៖ អតិបរមា ៥០០KB ក្នុងមួយឯកសារ ហើយសរុប ≤ ៧០០KB';
+  $('log-existing-files').innerHTML = editingAttachments.map((f, i) => `<div class="flex items-center justify-between gap-2 text-[11px] bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1"><a href="${esc(f.url)}" target="_blank" rel="noopener" download="${esc(f.name)}" class="text-blue-600 hover:underline truncate"><i class="fa-solid fa-paperclip"></i> ${esc(f.name)} <span class="text-slate-400">(${fmtSize(f.size || 0)})</span></a><button type="button" data-act="removeAtt" data-id="${i}" class="text-red-500 hover:bg-red-50 rounded px-1.5" title="ដកចេញ"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+  const pf = [...($('log-files').files || [])];
+  $('log-pending-files').innerHTML = pf.map(f => `<div class="text-[11px] text-emerald-700"><i class="fa-solid fa-circle-plus"></i> ${esc(f.name)} <span class="text-slate-400">(${fmtSize(f.size)})</span></div>`).join('');
+}
+function removeAtt(i) { const a = editingAttachments.splice(+i, 1)[0]; if (a) removedAttachments.push(a); renderLogAttachments(); }
+window.onLogFilesPicked = function () {
+  const inp = $('log-files'), max = maxFileSize(), dt = new DataTransfer(), bad = [];
+  [...inp.files].forEach(f => { if (f.size <= max) dt.items.add(f); else bad.push(f.name); });
+  inp.files = dt.files;
+  if (bad.length) showToast(`ឯកសារធំលើសកំណត់ (${fmtSize(max)})៖ ${bad.join(', ')}`, true);
+  renderLogAttachments();
+};
+async function uploadFiles(files, logId) {
+  const out = [], prog = $('upload-progress');
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    prog.classList.remove('hidden'); prog.textContent = `កំពុង Upload ${i + 1}/${files.length}៖ ${f.name}`;
+    if (hasStorage()) {
+      const S = cloud.stM, safe = f.name.replace(/[^\p{L}\p{N}._-]+/gu, '_');
+      const path = `attachments/${logId}/${Date.now()}_${safe}`, r = S.ref(cloud.storage, path);
+      await S.uploadBytes(r, f);
+      out.push({ name: f.name, size: f.size, type: f.type, url: await S.getDownloadURL(r), path });
+    } else {
+      const url = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(f); });
+      out.push({ name: f.name, size: f.size, type: f.type, url, path: '' });
+    }
+  }
+  return out;
+}
+async function deleteStoredFiles(list) {
+  if (!cloud.storage || !list || !list.length) return;
+  for (const a of list) { if (!a.path) continue; try { await cloud.stM.deleteObject(cloud.stM.ref(cloud.storage, a.path)); } catch (e) {} }
+}
+
+// ---------- វត្តមាន ----------
+const WORK_START = '07:30';
+const ATT_STATUS = {
+  present: { t: 'មានវត្តមាន', s: '✓', c: 'bg-emerald-50 text-emerald-700 border-emerald-200', cell: 'text-emerald-700' },
+  late:    { t: 'ចូលយឺត', s: 'យ', c: 'bg-amber-50 text-amber-700 border-amber-200', cell: 'text-amber-600 font-bold' },
+  leave:   { t: 'ច្បាប់សម្រាក', s: 'ច', c: 'bg-sky-50 text-sky-700 border-sky-200', cell: 'text-sky-600 font-bold' },
+  mission: { t: 'បេសកកម្ម', s: 'ប', c: 'bg-indigo-50 text-indigo-700 border-indigo-200', cell: 'text-indigo-600 font-bold' },
+  absent:  { t: 'អវត្តមាន', s: 'អ', c: 'bg-red-50 text-red-700 border-red-200', cell: 'text-red-600 font-bold' }
+};
+const attKey = (d, sid) => `${d}_${sid}`;
+const attFind = (d, sid) => attendance.find(a => a.id === attKey(d, sid));
+const canEditAtt = sid => isAdmin() || !!(mineStaff() && mineStaff().id === sid);
+
+async function persistAtt(items, removeIds = []) {
+  attendance = attendance.filter(a => !removeIds.includes(a.id) && !items.some(i => i.id === a.id)).concat(items);
+  saveLocal();
+  autoBackupData();
+  try {
+    for (const i of items) await cloudSet('attendance', i.id, i);
+    for (const id of removeIds) await cloudDel('attendance', id);
+    return true;
+  } catch (e) { console.error(e); showToast('រក្សាទុកក្នុងម៉ាស៊ីនបាន ប៉ុន្តែមិនទាន់ Sync ទៅ Cloud', true); return false; }
+}
+window.onAttDateChange = function () { attDirty = false; renderAttendance(); };
+window.renderAttendance = function (force) {
+  if (!$('att-date')) return;
+  if (force === true) attDirty = false;
+  const d = $('att-date').value || todayStr, ym = $('att-month').value || currentYM;
+  $('att-start-label').textContent = WORK_START;
+  $('att-date-label').textContent = formatKhmerDate(d);
+
+  if (!attDirty) {
+    $('att-daily-body').innerHTML = staffList.map((s, i) => {
+      const a = attFind(d, s.id) || {}, ed = canEditAtt(s.id), dis = ed ? '' : 'disabled';
+      const opts = `<option value="">— មិនទាន់កត់ត្រា —</option>` + Object.entries(ATT_STATUS).map(([k, v]) => `<option value="${k}" ${a.status === k ? 'selected' : ''}>${v.t}</option>`).join('');
+      const inp = 'w-full text-xs border border-slate-300 rounded-lg px-2 py-1.5 bg-white outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50 disabled:text-slate-500';
+      return `<tr data-staff="${esc(s.id)}" class="${ed ? '' : 'bg-slate-50/60'}">
+        <td class="py-2 px-3 text-center text-slate-500">${toKhmerNum(i + 1)}</td>
+        <td class="py-2 px-3 font-semibold text-blue-900 whitespace-nowrap">${esc(s.name)}</td>
+        <td class="py-2 px-3 text-slate-500">${esc(s.role)}</td>
+        <td class="py-2 px-3"><select class="att-status ${inp}" ${dis}>${opts}</select></td>
+        <td class="py-2 px-3"><input type="time" class="att-in ${inp}" value="${esc(a.checkIn || '')}" ${dis}></td>
+        <td class="py-2 px-3"><input type="time" class="att-out ${inp}" value="${esc(a.checkOut || '')}" ${dis}></td>
+        <td class="py-2 px-3"><input type="text" class="att-note ${inp}" value="${esc(a.note || '')}" ${dis}></td></tr>`;
+    }).join('') || `<tr><td colspan="7" class="py-6 text-center text-slate-400">មិនមានមន្ត្រី</td></tr>`;
+  }
+  const dayRecs = attendance.filter(a => a.date === d);
+  $('att-day-stats').innerHTML = Object.entries(ATT_STATUS).map(([k, v]) => `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-semibold ${v.c}">${v.t}: ${toKhmerNum(dayRecs.filter(a => a.status === k).length)}</span>`).join('')
+    + `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-semibold bg-slate-50 text-slate-600 border-slate-200">មិនទាន់កត់ត្រា: ${toKhmerNum(Math.max(0, staffList.length - dayRecs.filter(a => staffById(a.staffId)).length))}</span>`;
+
+  const [y, m] = ym.split('-').map(Number), days = new Date(y, m, 0).getDate();
+  $('att-month-label').textContent = `${khmerMonthsShort[m - 1]} ឆ្នាំ${toKhmerNum(y)}`;
+  let head = `<thead><tr class="bg-slate-200 font-semibold"><th class="border border-slate-400 py-1.5 px-1.5 w-8">លរ</th><th class="border border-slate-400 py-1.5 px-2 text-left min-w-[110px]">មន្ត្រី</th>`;
+  for (let k = 1; k <= days; k++) { const wd = new Date(y, m - 1, k).getDay(); head += `<th class="border border-slate-400 py-1.5 px-0.5 w-6 text-center ${wd === 0 || wd === 6 ? 'bg-slate-300' : ''}">${toKhmerNum(k)}</th>`; }
+  head += Object.values(ATT_STATUS).map(v => `<th class="border border-slate-400 py-1.5 px-1 text-center">${v.s}</th>`).join('') + `<th class="border border-slate-400 py-1.5 px-1.5 text-center">អត្រា</th></tr></thead>`;
+  const body = staffList.map((s, i) => {
+    const recs = attendance.filter(a => a.staffId === s.id && a.date.startsWith(ym));
+    let cells = '';
+    for (let k = 1; k <= days; k++) {
+      const wd = new Date(y, m - 1, k).getDay(), r = recs.find(a => a.date === `${ym}-${pad(k)}`);
+      cells += `<td class="border border-slate-300 text-center py-1 ${wd === 0 || wd === 6 ? 'bg-slate-100' : ''} ${r ? ATT_STATUS[r.status].cell : ''}" ${r && r.note ? `title="${esc(r.note)}"` : ''}>${r ? ATT_STATUS[r.status].s : ''}</td>`;
+    }
+    const cnt = k => recs.filter(a => a.status === k).length;
+    const good = cnt('present') + cnt('late') + cnt('mission');
+    return `<tr><td class="border border-slate-300 text-center py-1">${toKhmerNum(i + 1)}</td><td class="border border-slate-300 px-2 py-1 font-semibold whitespace-nowrap">${esc(s.name)}</td>${cells}`
+      + Object.keys(ATT_STATUS).map(k => `<td class="border border-slate-300 text-center font-semibold">${toKhmerNum(cnt(k))}</td>`).join('')
+      + `<td class="border border-slate-300 text-center font-bold">${recs.length ? toKhmerNum(Math.round(good / recs.length * 100)) + '%' : '-'}</td></tr>`;
+  }).join('') || `<tr><td colspan="${days + 8}" class="py-4 text-center text-slate-400">មិនមានមន្ត្រី</td></tr>`;
+  $('att-month-table').innerHTML = head + `<tbody>${body}</tbody>`;
+};
+window.attMarkAllPresent = function () {
+  document.querySelectorAll('#att-daily-body tr[data-staff]').forEach(tr => {
+    const sel = tr.querySelector('.att-status');
+    if (!sel.disabled && !sel.value) sel.value = 'present';
+  });
+  attDirty = true;
+};
+window.saveAttendanceDay = async function () {
+  const d = $('att-date').value || todayStr, items = [], removeIds = [];
+  document.querySelectorAll('#att-daily-body tr[data-staff]').forEach(tr => {
+    const sid = tr.dataset.staff; if (!canEditAtt(sid)) return;
+    const st = tr.querySelector('.att-status').value, id = attKey(d, sid), prev = attFind(d, sid);
+    if (!st) { if (prev) removeIds.push(id); return; }
+    const s = staffById(sid);
+    items.push({ id, date: d, staffId: sid, staffName: s ? s.name : '', status: st, checkIn: tr.querySelector('.att-in').value || '', checkOut: tr.querySelector('.att-out').value || '', note: tr.querySelector('.att-note').value.trim(), createdBy: (prev && prev.createdBy) || (cloud.user ? cloud.user.uid : null) });
+  });
+  if (!items.length && !removeIds.length) { showToast('មិនមានអ្វីត្រូវរក្សាទុកទេ', true); return; }
+  attDirty = false;
+  const ok = await persistAtt(items, removeIds);
+  renderAttendance(true);
+  if (ok) showToast(`បានរក្សាទុកវត្តមាន ${toKhmerNum(items.length)} នាក់`);
+};
+window.attSelfCheck = async function (kind) {
+  const me = mineStaff();
+  if (!me) { showToast('អ៊ីមែលរបស់អ្នកមិនទាន់ភ្ជាប់នឹងមន្ត្រីណាទេ', true); return; }
+  const now = new Date(), t = `${pad(now.getHours())}:${pad(now.getMinutes())}`, d = localISO(now), prev = attFind(d, me.id);
+  const rec = { ...(prev || {}), id: attKey(d, me.id), date: d, staffId: me.id, staffName: me.name, note: (prev && prev.note) || '', checkIn: (prev && prev.checkIn) || '', checkOut: (prev && prev.checkOut) || '', createdBy: (prev && prev.createdBy) || (cloud.user ? cloud.user.uid : null) };
+  if (kind === 'in') {
+    if (prev && prev.checkIn && !confirm(`អ្នកបានចូលម៉ោង ${prev.checkIn} រួចហើយ។ ប្តូរទៅ ${t} ?`)) return;
+    rec.checkIn = t;
+    if (!prev || !prev.status || ['present', 'late', 'absent'].includes(prev.status)) rec.status = t > WORK_START ? 'late' : 'present';
+  } else { rec.checkOut = t; if (!rec.status) rec.status = 'present'; }
+  const ok = await persistAtt([rec]);
+  $('att-date').value = d; renderAttendance(true);
+  if (ok) showToast(kind === 'in' ? `បានកត់ត្រាម៉ោងចូល ${t}` : `បានកត់ត្រាម៉ោងចេញ ${t}`);
+};
+window.exportAttendanceCSV = function () {
+  const ym = $('att-month').value || currentYM, [y, m] = ym.split('-').map(Number), days = new Date(y, m, 0).getDate();
+  const rows = [['លរ', 'មន្ត្រី', 'តួនាទី', ...Array.from({ length: days }, (_, i) => i + 1), ...Object.values(ATT_STATUS).map(v => v.t), 'អត្រា%']];
+  staffList.forEach((s, i) => {
+    const recs = attendance.filter(a => a.staffId === s.id && a.date.startsWith(ym));
+    const cnt = k => recs.filter(a => a.status === k).length, good = cnt('present') + cnt('late') + cnt('mission');
+    rows.push([i + 1, s.name, s.role, ...Array.from({ length: days }, (_, k) => { const r = recs.find(a => a.date === `${ym}-${pad(k + 1)}`); return r ? ATT_STATUS[r.status].s : ''; }), ...Object.keys(ATT_STATUS).map(cnt), recs.length ? Math.round(good / recs.length * 100) : '']);
+  });
+  downloadFile(`attendance-${ym}.csv`, toCSV(rows), 'text/csv;charset=utf-8');
+};
+window.printAttendance = function (mode) {
+  const st = document.createElement('style');
+  st.textContent = mode === 'monthly'
+    ? '@page{size:A4 landscape;margin:10mm} @media print{#att-daily-section{display:none!important}}'
+    : '@page{size:A4;margin:14mm} @media print{#att-monthly-section{display:none!important}}';
+  document.head.appendChild(st);
+  const done = () => { st.remove(); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  window.print();
+};
+
+const actions = {
+  editTask: openTaskModal, deleteTask, removeAtt, editAssignee: openAssigneeModal,
+  editStaff: openEditStaffModal, deleteStaff, logStaff: logForStaff,
+  quickLog: quickLogTask, editLog: editWorkLog, deleteLog: deleteWorkLog,
+  editDoc: editDocument, deleteDoc: deleteDocument, cycleDocStatus
+};
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const fn = actions[b.dataset.act]; if (fn) fn(b.dataset.id);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeStaffModal(); closeAssigneeModal(); closeTaskModal(); } });
+$('assignee-modal').addEventListener('click', e => { if (e.target === $('assignee-modal')) closeAssigneeModal(); });
+$('staff-modal').addEventListener('click', e => { if (e.target === $('staff-modal')) closeStaffModal(); });
+$('task-modal').addEventListener('click', e => { if (e.target === $('task-modal')) closeTaskModal(); });
+$('att-daily-body').addEventListener('input', () => { attDirty = true; });
+$('att-daily-body').addEventListener('change', () => { attDirty = true; });
+
+initApp();
+</script>
+</body>
+</html>
